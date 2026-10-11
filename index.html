@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dash Bingo ⚡ Super Admin (300 Rows Audit)</title>
+    <title>Dash Bingo ⚡ Super Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
@@ -43,7 +43,7 @@
                     <img src="https://i.postimg.cc/Bv4zLkh5/20261005-200757.jpg" alt="Logo" class="w-8 h-8 rounded-xl object-cover border border-blue-400">
                     <div>
                         <h2 class="text-xs font-black text-white">DASH AUDIT ⚡</h2>
-                        <span class="text-[9px] text-emerald-400 font-bold">300 Rows Granular System</span>
+                        <span class="text-[9px] text-emerald-400 font-bold">Admin Hub</span>
                     </div>
                 </div>
                 <button onclick="toggleDrawer()" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 flex items-center justify-center text-xs">
@@ -54,6 +54,9 @@
             <nav class="space-y-1.5 text-xs font-bold">
                 <button onclick="navigateMenu('audit')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-blue-400 bg-blue-500/10 border border-blue-500/20">
                     <i class="fa-solid fa-scale-balanced w-5 text-center text-amber-400"></i> የ 50/50 ሽርክና ኦዲት
+                </button>
+                <button onclick="navigateMenu('broadcast')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-bullhorn w-5 text-center text-yellow-400"></i> 📢 ማስታወቂያ መላኪያ (Broadcast)
                 </button>
                 <button onclick="navigateMenu('txs-deposit')" class="drawer-btn w-full flex items-center justify-between p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
                     <div class="flex items-center gap-3">
@@ -108,7 +111,7 @@
                     <h1 id="pageTitle" class="text-xs font-black text-white flex items-center gap-1">
                         የ 50/50 ሽርክና ኦዲት <span class="text-yellow-400">⚖️</span>
                     </h1>
-                    <span class="text-[9px] text-slate-400 font-bold">እስከ 300 ረድፎች (300 Rows System)</span>
+                    <span class="text-[9px] text-slate-400 font-bold">እስከ 300 ረድፎች & Broadcast Hub</span>
                 </div>
             </div>
 
@@ -194,27 +197,86 @@
                 </div>
             </div>
 
-            <!-- QUICK SHORTCUT BUTTONS TO DEPOSITS & WITHDRAWALS -->
+            <!-- QUICK SHORTCUT BUTTONS -->
             <div class="grid grid-cols-2 gap-2 pt-1">
-                <button onclick="navigateMenu('txs-deposit')" class="p-3 bg-emerald-950/60 border border-emerald-500/40 rounded-2xl text-left active:scale-95 transition">
-                    <div class="flex items-center gap-1.5 text-emerald-400 font-black text-xs">
-                        <i class="fa-solid fa-arrow-down"></i> ገቢዎችን እይ
+                <button onclick="navigateMenu('broadcast')" class="p-3 bg-yellow-950/40 border border-yellow-500/40 rounded-2xl text-left active:scale-95 transition">
+                    <div class="flex items-center gap-1.5 text-yellow-400 font-black text-xs">
+                        <i class="fa-solid fa-bullhorn"></i> መልእክት ላክ
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-0.5">300 ረድፎች</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">ለሁሉም ተጫዋቾች</p>
                 </button>
-                <button onclick="navigateMenu('txs-withdraw')" class="p-3 bg-orange-950/60 border border-orange-500/40 rounded-2xl text-left active:scale-95 transition">
-                    <div class="flex items-center gap-1.5 text-orange-400 font-black text-xs">
-                        <i class="fa-solid fa-arrow-up"></i> ወጪዎችን እይ
+                <button onclick="navigateMenu('txs-pending')" class="p-3 bg-blue-950/40 border border-blue-500/40 rounded-2xl text-left active:scale-95 transition">
+                    <div class="flex items-center gap-1.5 text-blue-400 font-black text-xs">
+                        <i class="fa-solid fa-clock-rotate-left"></i> ተጠባባቂዎች
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-0.5">300 ረድፎች</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">ማረጋገጫዎች</p>
                 </button>
             </div>
         </section>
 
-        <!-- ================= PAGE 2: 300 ROWS TRANSACTIONS VIEW (SEPARATE TABS) ================= -->
+        <!-- ================= PAGE 2: BROADCAST CENTER (ማስታወቂያ መላኪያ) ================= -->
+        <section id="view-broadcast" class="hidden space-y-3">
+            
+            <div class="glass-box p-4 rounded-3xl border border-yellow-500/40 space-y-3">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <img src="https://i.postimg.cc/Bv4zLkh5/20261005-200757.jpg" alt="Logo" class="w-7 h-7 rounded-lg object-cover border border-yellow-400">
+                        <div>
+                            <h3 class="text-xs font-black text-white">የማስታወቂያ መላኪያ (Broadcast Hub)</h3>
+                            <p class="text-[9px] text-slate-400">በቦቱ አማካኝነት ለሁሉም ተጫዋቾች ይላካል</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-yellow-500/20 text-yellow-300 font-bold px-2 py-0.5 rounded-full border border-yellow-500/30">
+                        Live
+                    </span>
+                </div>
+
+                <!-- PRESET TEMPLATES -->
+                <div class="space-y-1.5">
+                    <span class="text-[10px] font-bold text-slate-300">ፈጣን አቋራጭ አብነቶች (Templates)፦</span>
+                    <div class="grid grid-cols-3 gap-1.5 text-[10px] font-bold">
+                        <button type="button" onclick="loadTemplate('withdrawal')" class="p-2 rounded-xl bg-slate-950 border border-yellow-500/30 hover:border-yellow-400 text-yellow-300 active:scale-95 transition text-center">
+                            🛠️ የ Withdrawal ማሻሻያ
+                        </button>
+                        <button type="button" onclick="loadTemplate('bonus')" class="p-2 rounded-xl bg-slate-950 border border-emerald-500/30 hover:border-emerald-400 text-emerald-300 active:scale-95 transition text-center">
+                            🎁 አዲስ ቦነስ
+                        </button>
+                        <button type="button" onclick="loadTemplate('round')" class="p-2 rounded-xl bg-slate-950 border border-blue-500/30 hover:border-blue-400 text-blue-300 active:scale-95 transition text-center">
+                            ⚡ አዲስ ዙር
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MESSAGE TEXTAREA -->
+                <div class="space-y-1">
+                    <span class="text-[10px] font-bold text-slate-300">የመልእክቱ ጽሁፍ (HTML formatting ይሰራል)፦</span>
+                    <textarea id="broadcastMsgInput" oninput="updateLivePreview()" rows="5" class="w-full text-xs p-3 rounded-2xl bg-slate-950 border border-slate-800 text-white outline-none focus:border-yellow-400 leading-relaxed font-sans"></textarea>
+                </div>
+
+                <!-- LIVE TELEGRAM PREVIEW CARD -->
+                <div class="space-y-1">
+                    <span class="text-[10px] font-bold text-slate-400">የቀጥታ ማሳያ (ተጫዋቾች ስልካቸው ላይ የሚያዩት)፦</span>
+                    <div class="p-3 bg-slate-950/90 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex items-center gap-2">
+                            <img src="https://i.postimg.cc/Bv4zLkh5/20261005-200757.jpg" alt="Bot Logo" class="w-5 h-5 rounded-full object-cover">
+                            <span class="text-[11px] font-black text-blue-400">Dash Bingo Bot ⚡</span>
+                        </div>
+                        <div id="livePreviewBox" class="text-xs text-slate-200 leading-relaxed bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80 whitespace-pre-wrap">
+                            ጽሁፉ እዚህ ጋር ይታያል...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEND BUTTON -->
+                <button onclick="sendBroadcast()" id="sendBroadcastBtn" class="w-full gradient-blue hover:brightness-110 text-white font-black py-3 rounded-2xl text-xs shadow-xl active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> አሁኑኑ ለሁሉም ላክ (Broadcast Now)
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: 300 ROWS TRANSACTIONS VIEW ================= -->
         <section id="view-txs" class="hidden space-y-3">
             
-            <!-- Quick Filter Bar -->
             <div class="flex gap-1.5 overflow-x-auto no-scrollbar text-[10px] font-bold">
                 <button onclick="setTxCategory('DEPOSIT')" id="cBtn-DEPOSIT" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-black flex items-center gap-1">
                     <i class="fa-solid fa-arrow-down"></i> ገቢዎች ብቻ
@@ -230,25 +292,20 @@
                 </button>
             </div>
 
-            <!-- Instant Search Input (በስም፣ በስልክ፣ በብር መፈለጊያ) -->
             <div class="glass-box p-2 rounded-2xl border border-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs ml-1"></i>
                 <input id="txSearchInput" oninput="renderTransactions()" type="text" placeholder="በ 300 ረድፎች ውስጥ ፈልግ (ስም፣ ስልክ፣ ብር)..." class="w-full text-xs bg-transparent text-white outline-none">
             </div>
 
-            <!-- Rows Count Badge -->
             <div class="flex justify-between items-center text-[10px] px-1 text-slate-400">
                 <span id="txCategoryTitle" class="font-bold text-white">የተመረጠው፡ ገቢዎች ብቻ</span>
                 <span>የተገኙ ረድፎች፡ <b id="txCountBadge" class="text-blue-400">0</b></span>
             </div>
 
-            <!-- 300 Rows Cards Container -->
-            <div id="txListContainer" class="space-y-2.5 max-h-[650px] overflow-y-auto pr-1">
-                <!-- Rendered dynamically -->
-            </div>
+            <div id="txListContainer" class="space-y-2.5 max-h-[650px] overflow-y-auto pr-1"></div>
         </section>
 
-        <!-- ================= PAGE 3: REAL CASHFLOW (ከመጀመሪያው ጀምሮ) ================= -->
+        <!-- ================= PAGE 4: REAL CASHFLOW ================= -->
         <section id="view-cashflow" class="hidden space-y-3">
             <div class="glass-box p-4 rounded-3xl border border-emerald-500/30 space-y-3">
                 <h3 class="text-xs font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -299,7 +356,7 @@
             </div>
         </section>
 
-        <!-- ================= PAGE 4: BONUSES ONLY (ለብቻው) ================= -->
+        <!-- ================= PAGE 5: BONUSES ONLY ================= -->
         <section id="view-bonus" class="hidden space-y-3">
             <div class="p-4 rounded-3xl bg-gradient-to-tr from-purple-950 via-slate-900 to-indigo-950 border border-purple-500/40 space-y-3">
                 <div>
@@ -328,7 +385,7 @@
             </div>
         </section>
 
-        <!-- ================= PAGE 5: PROMO CODES & WEEKLY PAYOUT ================= -->
+        <!-- ================= PAGE 6: PROMO CODES & WEEKLY PAYOUT ================= -->
         <section id="view-promo" class="hidden space-y-3">
             <div class="glass-box p-3.5 rounded-2xl border border-yellow-500/30 space-y-2">
                 <h3 class="font-black text-xs text-white">የሳምንቱ ቦነስ ለ 10 ሰዎች ማከፋፈያ</h3>
@@ -354,8 +411,15 @@
         const BACKEND_URL = "https://dashbingo.onrender.com";
 
         let adminKey = localStorage.getItem('dash_admin_key') || '';
-        let allTransactions = []; // Holds all 300 rows
-        let currentCategory = 'DEPOSIT'; // 'DEPOSIT', 'WITHDRAW', 'PENDING', 'ALL'
+        let allTransactions = [];
+        let currentCategory = 'DEPOSIT';
+
+        // PRESET TEMPLATES DATA
+        const templates = {
+            withdrawal: `⚠️ <b>ጠቃሚ ማሳሰቢያ ለክቡራን የ Dash Bingo ተጫዋቾች!</b>\n\nበአሁኑ ሰዓት ገንዘብ ማውጫ (Withdrawal) ሲስተማችንን ይበልጥ ፈጣንና አስተማማኝ ለማድረግ የሲስተም ማሻሻያ (System Maintenance) እያደረግን እንገኛለን።\n\nበጥቂት ሰዓታት ውስጥ ማሻሻያውን አጠናቀን የምንመለስ ሲሆን፣ የጠየቃችኋቸው ክፍያዎች በሙሉ እንደተጠበቁ ናቸው።\n\nበትዕግስት ስለጠበቃችሁን እናመሰግናለን! 🙏⚡\n@DashBingo`,
+            bonus: `🎁 <b>ልዩ የስጦታ ማስታወቂያ ከ Dash Bingo!</b>\n\nዛሬ ለተጫዋቾቻችን አዲስ የፕሮሞ ኮድ ተለቋል! አሁኑኑ ገብተው ኮዱን በመጠቀም ነፃ የጨዋታ ቦነስዎን ይውሰዱ።\n\n👉 <a href="https://t.me/dashbingobot/eth">አሁኑኑ ይጫወቱ</a>`,
+            round: `⚡ <b>ትኩስ ዙር ተጀምሯል!</b>\n\nከፍተኛ ድራሽ (Pot) ተይዟል፤ አሁኑኑ ገብተው ካርዶችን በመቁረጥ የዕድሉ ባለቤት ይሁኑ! 🚀\n\n👉 <a href="https://t.me/dashbingobot/eth">ለመቁረጥ እዚህ ይጫኑ</a>`
+        };
 
         if (adminKey) checkKey(adminKey);
 
@@ -379,6 +443,7 @@
                     document.getElementById('authModal').classList.add('hidden');
                     document.getElementById('adminDashboard').classList.remove('hidden');
                     loadAllData();
+                    loadTemplate('withdrawal'); // Default template
                 } else {
                     alert("የተሳሳተ የአድሚን Secret Key!");
                 }
@@ -400,7 +465,7 @@
         }
 
         function navigateMenu(menuId) {
-            ['audit', 'txs', 'cashflow', 'bonus', 'promo'].forEach(m => {
+            ['audit', 'broadcast', 'txs', 'cashflow', 'bonus', 'promo'].forEach(m => {
                 document.getElementById(`view-${m}`).classList.add('hidden');
             });
 
@@ -414,6 +479,7 @@
 
             const titles = {
                 'audit': 'የ 50/50 ሽርክና ኦዲት ⚖️',
+                'broadcast': '📢 ማስታወቂያ መላኪያ (Broadcast)',
                 'txs-deposit': '📥 ገቢዎች ብቻ (Deposits)',
                 'txs-withdraw': '📤 ወጪዎች ብቻ (Withdrawals)',
                 'txs-pending': '⏳ ተጠባባቂዎች (Pending)',
@@ -423,6 +489,43 @@
             };
             document.getElementById('pageTitle').innerHTML = titles[menuId] || 'ዳሽቦርድ';
             toggleDrawer();
+        }
+
+        // BROADCAST FUNCTIONS
+        function loadTemplate(type) {
+            const text = templates[type] || '';
+            document.getElementById('broadcastMsgInput').value = text;
+            updateLivePreview();
+        }
+
+        function updateLivePreview() {
+            const val = document.getElementById('broadcastMsgInput').value;
+            document.getElementById('livePreviewBox').innerHTML = val || '<span class="text-slate-500">ምንም ጽሁፍ አልተጻፈም...</span>';
+        }
+
+        async function sendBroadcast() {
+            const message = document.getElementById('broadcastMsgInput').value.trim();
+            if (!message) return alert("እባክዎ መልእክት ያስገቡ!");
+            if (!confirm("ይህ መልእክት በቦቱ አማካኝነት ለሁሉም ተጫዋቾች ይላካል፤ እርግጠኛ ነዎት?")) return;
+
+            const btn = document.getElementById('sendBroadcastBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> መልእክቱ እየተላከ ነው...';
+
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/admin/broadcast`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+                    body: JSON.stringify({ message })
+                });
+                const data = await res.json();
+                alert(data.message || data.error);
+            } catch (e) {
+                alert("መላክ አልተቻለም!");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> አሁኑኑ ለሁሉም ላክ (Broadcast Now)';
+            }
         }
 
         function setTxCategory(category) {
@@ -448,7 +551,6 @@
         }
 
         async function loadAllData() {
-            // 1. Fetch Complete Lifetime Audit (Direct SQL Sums)
             try {
                 const res = await fetch(`${BACKEND_URL}/api/admin/audit?admin_key=${adminKey}`);
                 const data = await res.json();
@@ -468,7 +570,6 @@
                 document.getElementById('aymenNetCash').innerText = `${aymenNet.toFixed(2)} ETB`;
                 document.getElementById('nebyuNetCash').innerText = `${nebyuNet.toFixed(2)} ETB`;
 
-                // ⚖️ 50/50 Settlement Equation
                 const verdictEl = document.getElementById('settlementVerdictText');
                 if (aymenNet > nebyuNet) {
                     const diffToTransfer = (aymenNet - nebyuNet) / 2;
@@ -480,7 +581,6 @@
                     verdictEl.innerHTML = `✅ ሒሳቡ ፍጹም እኩል ነው! ማንም ለማንም እዳ የለበትም።`;
                 }
 
-                // Cashflow
                 const totalIn = cbeIn + telebirrIn;
                 const totalOut = data.totalWithdrawals;
                 const netLiquid = totalIn - totalOut;
@@ -488,18 +588,15 @@
                 document.getElementById('totalCashOut').innerText = `${totalOut.toFixed(2)} ETB`;
                 document.getElementById('netLiquidCash').innerText = `${netLiquid.toFixed(2)} ETB`;
 
-                // Stats
                 document.getElementById('statTotalRake').innerText = `${data.totalRake.toFixed(2)} ETB`;
                 document.getElementById('statUserLiability').innerText = `${data.totalUserLiability.toFixed(2)} ETB`;
                 document.getElementById('statRoundsCount').innerText = data.totalRounds;
                 document.getElementById('statUsersCount').innerText = data.totalUsers;
 
-                // Bonuses
                 document.getElementById('statWelcomeBonus').innerText = `${data.welcomeBonus.toFixed(2)} ETB`;
                 document.getElementById('statReferralBonus').innerText = `${data.referralBonus.toFixed(2)} ETB`;
                 document.getElementById('statTotalBonusGiven').innerText = `${(data.welcomeBonus + data.referralBonus).toFixed(2)} ETB`;
 
-                // Badges
                 const totalPending = data.pendingDepositsCount + data.pendingWithdrawalsCount;
                 const hBadge = document.getElementById('headerPendingBadge');
                 const dBadge = document.getElementById('drawerPendingBadge');
@@ -516,7 +613,6 @@
                 console.error("Audit load error:", e);
             }
 
-            // 2. Fetch up to 300 Transactions Rows
             try {
                 const tRes = await fetch(`${BACKEND_URL}/api/admin/transactions?admin_key=${adminKey}`);
                 allTransactions = await tRes.json();
@@ -540,7 +636,6 @@
 
             let filtered = allTransactions;
 
-            // 1. Filter by Selected Category
             if (currentCategory === 'DEPOSIT') {
                 filtered = filtered.filter(t => t.type === 'DEPOSIT');
             } else if (currentCategory === 'WITHDRAW') {
@@ -549,7 +644,6 @@
                 filtered = filtered.filter(t => t.status === 'PENDING');
             }
 
-            // 2. Search Keyword Filter (ስም፣ ስልክ፣ ብር)
             if (searchKeyword) {
                 filtered = filtered.filter(t => 
                     (t.first_name || '').toLowerCase().includes(searchKeyword) ||
