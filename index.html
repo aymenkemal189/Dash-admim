@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dash Bingo ⚡ Financial Audit Admin</title>
+    <title>Dash Bingo ⚡ Super Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
@@ -24,7 +24,7 @@
                 <i class="fa-solid fa-calculator text-2xl text-white"></i>
             </div>
             <div>
-                <h2 class="text-base font-black text-white">የኦዲትና የአድሚን መግቢያ</h2>
+                <h2 class="text-base font-black text-white">የአድሚን መግቢያ</h2>
                 <p class="text-[11px] text-slate-400">ሚስጥራዊ ቁልፍዎን (Secret Key) ያስገቡ</p>
             </div>
             <input id="adminKeyInput" type="password" placeholder="Admin Secret Key..." class="w-full text-xs font-mono p-3 rounded-2xl bg-slate-900 border border-slate-700 text-center text-white outline-none focus:border-blue-500">
@@ -56,7 +56,7 @@
                     <i class="fa-solid fa-scale-balanced w-5 text-center text-amber-400"></i> የ 50/50 ሽርክና ኦዲት
                 </button>
                 <button onclick="navigateMenu('cashflow')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-money-bill-transfer w-5 text-center text-emerald-400"></i> ገቢና ወጪ (ከመጀመሪያው)
+                    <i class="fa-solid fa-money-bill-transfer w-5 text-center text-emerald-400"></i> ገቢና ወጪ (All-Time)
                 </button>
                 <button onclick="navigateMenu('bonus')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
                     <i class="fa-solid fa-gift w-5 text-center text-purple-400"></i> የቦነስ ሪፖርት (ለብቻው)
@@ -110,10 +110,8 @@
             </div>
         </header>
 
-        <!-- ================= PAGE 1: 50/50 PARTNERSHIP SETTLEMENT ================= -->
+        <!-- PAGE 1: 50/50 PARTNERSHIP SETTLEMENT -->
         <section id="view-audit" class="space-y-3">
-            
-            <!-- MASTER VERDICT BOX (ማን ለማን ስንት መክፈል አለበት) -->
             <div class="p-4 rounded-3xl bg-gradient-to-tr from-amber-950 via-slate-900 to-amber-900 border-2 border-amber-500/60 text-center space-y-2 shadow-2xl">
                 <span class="text-[10px] font-bold text-amber-300 uppercase tracking-widest">የ 50/50 እዳ ማወራረጃ (Settlement Verdict)</span>
                 <h2 id="settlementVerdictText" class="text-base font-black text-white leading-relaxed">
@@ -124,7 +122,7 @@
                 </div>
             </div>
 
-            <!-- PARTNER 1: AYMEN KEMAL (CBE) -->
+            <!-- PARTNER A: AYMEN KEMAL (CBE) -->
             <div class="glass-box p-3.5 rounded-2xl border border-blue-500/30 space-y-2">
                 <div class="flex justify-between items-center pb-2 border-b border-slate-800">
                     <div class="flex items-center gap-2">
@@ -154,7 +152,7 @@
                 </div>
             </div>
 
-            <!-- PARTNER 2: NEBYU (TELEBIRR) -->
+            <!-- PARTNER B: NEBYU (TELEBIRR) -->
             <div class="glass-box p-3.5 rounded-2xl border border-blue-500/30 space-y-2">
                 <div class="flex justify-between items-center pb-2 border-b border-slate-800">
                     <div class="flex items-center gap-2">
@@ -184,16 +182,14 @@
                 </div>
             </div>
 
-            <!-- QUICK SHARE LINK TO CASHFLOW -->
             <button onclick="navigateMenu('cashflow')" class="w-full gradient-blue p-3.5 rounded-2xl font-black text-xs text-white shadow-lg flex items-center justify-between active:scale-95 transition">
                 <span><i class="fa-solid fa-money-bill-transfer mr-1.5"></i> የሙሉ ገቢ እና ወጪ ዝርዝር</span>
                 <i class="fa-solid fa-chevron-right text-xs"></i>
             </button>
         </section>
 
-        <!-- ================= PAGE 2: REAL CASH IN/OUT (ከመጀመሪያው ጀምሮ) ================= -->
+        <!-- PAGE 2: REAL CASH IN/OUT -->
         <section id="view-cashflow" class="hidden space-y-3">
-            
             <div class="glass-box p-4 rounded-3xl border border-emerald-500/30 space-y-3">
                 <h3 class="text-xs font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-vault"></i> አጠቃላይ ጥሬ ገንዘብ (All-Time Liquid Cash)
@@ -217,7 +213,6 @@
                 </div>
             </div>
 
-            <!-- SYSTEM PROFIT & USER LIABILITY -->
             <div class="glass-box p-4 rounded-3xl border border-blue-500/30 space-y-2.5">
                 <h3 class="text-xs font-black text-white flex items-center gap-1.5">
                     <i class="fa-solid fa-chart-line text-blue-400"></i> የቢዝነሱ አጠቃላይ ትርፍና የተጫዋች ሒሳብ
@@ -244,9 +239,8 @@
             </div>
         </section>
 
-        <!-- ================= PAGE 3: BONUSES ONLY (ሙሉ በሙሉ ለብቻው) ================= -->
+        <!-- PAGE 3: BONUSES ONLY (ለብቻው) -->
         <section id="view-bonus" class="hidden space-y-3">
-            
             <div class="p-4 rounded-3xl bg-gradient-to-tr from-purple-950 via-slate-900 to-indigo-950 border border-purple-500/40 space-y-3">
                 <div>
                     <h3 class="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -274,7 +268,7 @@
             </div>
         </section>
 
-        <!-- ================= PAGE 4: TRANSACTIONS & SMS ================= -->
+        <!-- PAGE 4: TRANSACTIONS & SMS -->
         <section id="view-txs" class="hidden space-y-3">
             <div class="flex gap-1.5 overflow-x-auto no-scrollbar text-[10px] font-bold">
                 <button onclick="filterTxs('PENDING')" id="fBtn-PENDING" class="px-3 py-1.5 rounded-xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 font-black">ተጠባባቂ</button>
@@ -285,7 +279,7 @@
             <div id="txListContainer" class="space-y-2.5"></div>
         </section>
 
-        <!-- ================= PAGE 5: PROMO CODES & WEEKLY PAYOUT ================= -->
+        <!-- PAGE 5: PROMO CODES & WEEKLY PAYOUT -->
         <section id="view-promo" class="hidden space-y-3">
             <div class="glass-box p-3.5 rounded-2xl border border-yellow-500/30 space-y-2">
                 <h3 class="font-black text-xs text-white">የሳምንቱ ቦነስ ለ 10 ሰዎች ማከፋፈያ</h3>
@@ -306,13 +300,11 @@
         </section>
     </div>
 
-    <!-- CLIENT AUDIT & ACCOUNTING SCRIPT -->
+    <!-- CLIENT SCRIPT -->
     <script>
-        // ዋናው የ Render ሰርቨር አድራሻ
-const BACKEND_URL = "https://dashbingo.onrender.com";
+        // ⚡ የ Render Backend አድራሻ
+        const BACKEND_URL = "https://dashbingo.onrender.com";
 
-// socket ን እንዲህ ቀይረው:
-const socket = io(BACKEND_URL);
         let adminKey = localStorage.getItem('dash_admin_key') || '';
         let allTransactions = [];
         let currentFilter = 'PENDING';
@@ -332,7 +324,7 @@ const socket = io(BACKEND_URL);
 
         async function checkKey(key) {
             try {
-                const res = await fetch(`/api/admin/audit?admin_key=${key}`);
+                const res = await fetch(`${BACKEND_URL}/api/admin/audit?admin_key=${key}`);
                 if (res.ok) {
                     adminKey = key;
                     localStorage.setItem('dash_admin_key', key);
@@ -361,11 +353,9 @@ const socket = io(BACKEND_URL);
 
         function navigateMenu(menuId) {
             ['audit', 'cashflow', 'bonus', 'txs', 'promo'].forEach(m => {
-                const el = document.getElementById(`view-${m}`);
-                if (el) el.classList.add('hidden');
+                document.getElementById(`view-${m}`).classList.add('hidden');
             });
-            const target = document.getElementById(`view-${menuId}`);
-            if (target) target.classList.remove('hidden');
+            document.getElementById(`view-${menuId}`).classList.remove('hidden');
 
             const titles = {
                 audit: 'የ 50/50 ሽርክና ኦዲት ⚖️',
@@ -392,12 +382,10 @@ const socket = io(BACKEND_URL);
         }
 
         async function loadAllData() {
-            // 1. Fetch Complete Lifetime Audit Directly From Database SQL
             try {
-                const res = await fetch(`/api/admin/audit?admin_key=${adminKey}`);
+                const res = await fetch(`${BACKEND_URL}/api/admin/audit?admin_key=${adminKey}`);
                 const data = await res.json();
 
-                // Bank Deposits (100% Real Money)
                 const cbeIn = data.cbeDeposits;
                 const telebirrIn = data.telebirrDeposits;
                 const cbeOut = data.cbeWithdrawals;
@@ -408,25 +396,24 @@ const socket = io(BACKEND_URL);
                 document.getElementById('cbeTotalWithdrawals').innerText = `${cbeOut.toFixed(2)} ETB`;
                 document.getElementById('telebirrTotalWithdrawals').innerText = `${telebirrOut.toFixed(2)} ETB`;
 
-                // Net Cash In Hand for Each Partner
                 const aymenNet = cbeIn - cbeOut;
                 const nebyuNet = telebirrIn - telebirrOut;
                 document.getElementById('aymenNetCash').innerText = `${aymenNet.toFixed(2)} ETB`;
                 document.getElementById('nebyuNetCash').innerText = `${nebyuNet.toFixed(2)} ETB`;
 
-                // ⚖️ 50/50 Settlement Equation
+                // ⚖️ 50/50 Verdict
                 const verdictEl = document.getElementById('settlementVerdictText');
                 if (aymenNet > nebyuNet) {
                     const diffToTransfer = (aymenNet - nebyuNet) / 2;
-                    verdictEl.innerHTML = `👉 <span class="text-amber-400 font-black">Aymen</span> ለ <span class="text-emerald-400 font-black">Nebyu</span> <span class="text-white font-black underline">${diffToTransfer.toFixed(2)} ETB</span> መክፈል (ማወራረድ) አለበት።`;
+                    verdictEl.innerHTML = `👉 <span class="text-amber-400 font-black">Aymen</span> ለ <span class="text-emerald-400 font-black">Nebyu</span> <span class="text-white font-black underline">${diffToTransfer.toFixed(2)} ETB</span> መክፈል አለበት።`;
                 } else if (nebyuNet > aymenNet) {
                     const diffToTransfer = (nebyuNet - aymenNet) / 2;
-                    verdictEl.innerHTML = `👉 <span class="text-emerald-400 font-black">Nebyu</span> ለ <span class="text-amber-400 font-black">Aymen</span> <span class="text-white font-black underline">${diffToTransfer.toFixed(2)} ETB</span> መክፈል (ማወራረድ) አለበት።`;
+                    verdictEl.innerHTML = `👉 <span class="text-emerald-400 font-black">Nebyu</span> ለ <span class="text-amber-400 font-black">Aymen</span> <span class="text-white font-black underline">${diffToTransfer.toFixed(2)} ETB</span> መክፈል አለበት።`;
                 } else {
                     verdictEl.innerHTML = `✅ ሒሳቡ ፍጹም እኩል ነው! ማንም ለማንም እዳ የለበትም።`;
                 }
 
-                // All-Time Cashflow
+                // Cashflow
                 const totalIn = cbeIn + telebirrIn;
                 const totalOut = data.totalWithdrawals;
                 const netLiquid = totalIn - totalOut;
@@ -434,18 +421,18 @@ const socket = io(BACKEND_URL);
                 document.getElementById('totalCashOut').innerText = `${totalOut.toFixed(2)} ETB`;
                 document.getElementById('netLiquidCash').innerText = `${netLiquid.toFixed(2)} ETB`;
 
-                // System Profit & Liabilities
+                // System stats
                 document.getElementById('statTotalRake').innerText = `${data.totalRake.toFixed(2)} ETB`;
                 document.getElementById('statUserLiability').innerText = `${data.totalUserLiability.toFixed(2)} ETB`;
                 document.getElementById('statRoundsCount').innerText = data.totalRounds;
                 document.getElementById('statUsersCount').innerText = data.totalUsers;
 
-                // Bonuses (100% Separate)
+                // Bonuses
                 document.getElementById('statWelcomeBonus').innerText = `${data.welcomeBonus.toFixed(2)} ETB`;
                 document.getElementById('statReferralBonus').innerText = `${data.referralBonus.toFixed(2)} ETB`;
                 document.getElementById('statTotalBonusGiven').innerText = `${(data.welcomeBonus + data.referralBonus).toFixed(2)} ETB`;
 
-                // Pending Notification
+                // Pending Badge
                 const totalPending = data.pendingDepositsCount + data.pendingWithdrawalsCount;
                 const hBadge = document.getElementById('headerPendingBadge');
                 const dBadge = document.getElementById('drawerPendingBadge');
@@ -458,14 +445,13 @@ const socket = io(BACKEND_URL);
                     hBadge.classList.add('hidden');
                     dBadge.classList.add('hidden');
                 }
-
             } catch (e) {
                 console.error("Audit load error:", e);
             }
 
-            // 2. Fetch Transactions List
+            // Load Transactions List
             try {
-                const tRes = await fetch(`/api/admin/transactions?admin_key=${adminKey}`);
+                const tRes = await fetch(`${BACKEND_URL}/api/admin/transactions?admin_key=${adminKey}`);
                 allTransactions = await tRes.json();
                 renderTransactions();
             } catch (e) {}
@@ -487,17 +473,17 @@ const socket = io(BACKEND_URL);
                 <div class="glass-box p-3 rounded-2xl space-y-2 border border-slate-800 shadow-md">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full ${t.type === 'DEPOSIT' ? 'bg-green-400' : t.type === 'WITHDRAW' ? 'bg-orange-400' : 'bg-purple-400'}"></span>
+                            <span class="w-2 h-2 rounded-full ${t.type === 'DEPOSIT' ? 'bg-green-400' : 'bg-orange-400'}"></span>
                             <span class="font-black text-xs text-white">${t.first_name}</span>
                             <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-slate-950 border border-slate-800 text-blue-400">${t.payment_method}</span>
                         </div>
-                        <span class="font-black text-xs ${t.type === 'DEPOSIT' ? 'text-green-400' : t.type === 'WITHDRAW' ? 'text-orange-400' : 'text-purple-400'}">
+                        <span class="font-black text-xs ${t.type === 'DEPOSIT' ? 'text-green-400' : 'text-orange-400'}">
                             ${t.type === 'DEPOSIT' ? '+' : '-'}${parseFloat(t.amount).toFixed(2)} ETB
                         </span>
                     </div>
 
                     ${t.sms_text ? `
-                        <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-slate-300 font-mono text-[10px] leading-relaxed select-all">
+                        <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-slate-300 font-mono text-[10px] select-all">
                             ${t.sms_text}
                         </div>` : ''}
 
@@ -517,7 +503,7 @@ const socket = io(BACKEND_URL);
         }
 
         async function resolveTx(id, action) {
-            const url = action === 'approve' ? '/api/admin/approve' : '/api/admin/reject';
+            const url = action === 'approve' ? `${BACKEND_URL}/api/admin/approve` : `${BACKEND_URL}/api/admin/reject`;
             await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
@@ -533,7 +519,7 @@ const socket = io(BACKEND_URL);
 
             if (!code || !amount || !maxUses) return alert("ሁሉንም መረጃ ያስገቡ!");
 
-            const res = await fetch('/api/admin/create-promocode', {
+            const res = await fetch(`${BACKEND_URL}/api/admin/create-promocode`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
                 body: JSON.stringify({ code, amount, maxUses })
@@ -550,7 +536,7 @@ const socket = io(BACKEND_URL);
 
         async function distributeBonus() {
             if (!confirm("እርግጠኛ ነዎት ለ 10 ሰዎች ቦነስ እንዲከፋፈል ይፈልጋሉ?")) return;
-            const res = await fetch('/api/admin/distribute-weekly-bonus', {
+            const res = await fetch(`${BACKEND_URL}/api/admin/distribute-weekly-bonus`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey }
             });
