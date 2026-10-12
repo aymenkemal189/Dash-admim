@@ -674,72 +674,25 @@
             }
         }
 
-        function setTxCategory(category) {
-            currentCategory = category;
 
-            ['DEPOSIT', 'WITHDRAW', 'PENDING', 'ALL'].forEach(c => {
-                const btn = document.getElementById(`cBtn-${c}`);
-                if (btn) {
-                    btn.className = (c === category)
-                        ? "px-3 py-1.5 rounded-xl bg-blue-600 text-white font-black border border-blue-400"
-                        : "px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800";
-                }
-            });
 
-            const labels = {
-                'DEPOSIT': 'የተመረጠው፡ ገቢዎች ብቻ (300 ረድፎች)',
-                'WITHDRAW': 'የተመረጠው፡ ወጪዎች ብቻ (300 ረድፎች)',
-                'PENDING': 'የተመረጠው፡ ተጠባባቂዎች ብቻ',
-                'ALL': 'የተመረጠው፡ ሁሉም 300 ረድፎች'
-            };
-            document.getElementById('txCategoryTitle').innerText = labels[category] || '';
-            renderTransactions();
-        }
 
-        async function loadAllData() {
-            try {
-                // 1. Fetch Timeframe-based Audit directly from DB
-                const res = await fetch(`${BACKEND_URL}/api/admin/audit?timeframe=${currentTimeframe}&admin_key=${adminKey}`);
-                const data = await res.json();
 
-                if (data.agentStatus) {
-                    currentAgentStatus = data.agentStatus;
-                    renderAgentBadges();
-                }
 
-                const cbeIn = data.cbeDeposits || 0;
-                const telebirrIn = data.telebirrDeposits || 0;
-                const cbeOut = data.cbeWithdrawals || 0;
-                const telebirrOut = data.telebirrWithdrawals || 0;
-                const totalIn = data.totalDeposits || (cbeIn + telebirrIn);
-                const totalOut = data.totalWithdrawals || (cbeOut + telebirrOut);
-                const netCash = totalIn - totalOut;
 
-                // Overview Metrics: All Users, Bets, Rake, Liability
-                document.getElementById('statTotalUsers').innerText = data.totalUsersAllTime || 0;
-                document.getElementById('periodUsersBadge').innerText = `+${data.usersInPeriod || 0} አዲስ`;
-                document.getElementById('statTotalRounds').innerText = data.totalRounds || 0;
-                
-                // Estimated Total Bet Volume (Rake / 0.20)
-                const totalRake = data.totalRake || 0;
-                const estimatedBetVol = totalRake * 5;
-                document.getElementById('statTotalBetVolume').innerText = `${estimatedBetVol.toFixed(0)} ETB`;
-                document.getElementById('statTotalRake').innerText = `${totalRake.toFixed(2)} ETB`;
-                document.getElementById('statUserLiability').innerText = `${(data.totalUserLiability || 0).toFixed(2)} ETB`;
 
-                // Overview Cashflow
-                document.getElementById('statOverviewDep').innerText = `${totalIn.toFixed(2)} ETB`;
-                document.getElementById('statOverviewWith').innerText = `${totalOut.toFixed(2)} ETB`;
-                document.getElementById('statOverviewNetCash').innerText = `${netCash.toFixed(2)} ETB`;
 
-                // Overview Bonuses
-                const totalBonus = data.totalBonus || (data.welcomeBonus + data.referralBonus);
-                document.getElementById('statOverviewBonus').innerText = `${totalBonus.toFixed(2)} ETB`;
 
-                // 50/50 Settlement Tab
-                document.getElementById('cbeTotalDeposits').innerText = `${cbeIn.toFixed(2)} ETB`;
-                document.getElementById('telebirrTotalDeposits').innerText = `${telebirrIn.toFixed(2)} ETB`;
-                document.getElementById('cbeTotalWithdrawals').innerText = `${cbeOut.toFixed(2)} ETB`;
+
+
+
+
+
+
+
+
+        
+                        document.getElementById('cbeTotalWithdrawals').innerText = `${cbeOut.toFixed(2)} ETB`;
                 document.getElementById('telebirrTotalWithdrawals').innerText = `${telebirrOut.toFixed(2)} ETB`;
 
                 const aymenNet = cbeIn - cbeOut;
@@ -820,11 +773,130 @@
                 filtered = filtered.filter(t => t.type === 'DEPOSIT');
             } else if (currentCategory === 'WITHDRAW') {
                 filtered = filtered.filter(t => t.type === 'WITHDRAW');
-            } else if (currentCategory === 'PENDING') {
-                filtered = filtered.filter(t => t.status === 'PENDING');
+           
+
+function setTxCategory(category) {
+            currentCategory = category;
+
+            ['DEPOSIT', 'WITHDRAW', 'PENDING', 'ALL'].forEach(c => {
+                const btn = document.getElementById(`cBtn-${c}`);
+                if (btn) {
+                    btn.className = (c === category)
+                        ? "px-3 py-1.5 rounded-xl bg-blue-600 text-white font-black border border-blue-400"
+                        : "px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800";
+                }
+            });
+
+            const labels = {
+                'DEPOSIT': 'የተመረጠው፡ ገቢዎች ብቻ (Deposits)',
+                'WITHDRAW': 'የተመረጠው፡ ወጪዎች ብቻ (Withdrawals)',
+                'PENDING': 'የተመረጠው፡ ተጠባባቂዎች ብቻ (Pending)',
+                'ALL': 'የተመረጠው፡ ሁሉም ዝውውሮች'
+            };
+            document.getElementById('txCategoryTitle').innerText = labels[category] || '';
+            
+            // የተመረጠውን ካቴጎሪ በቀጥታ ከሰርቨር ማምጣት
+            fetchTransactions();
+        }
+
+        // ⚡ ካቴጎሪውን እና የጊዜ ገደቡን ወደ ሰርቨሩ ልኮ የሚያመጣ ፈጣን ፈንክሽን
+        async function fetchTransactions() {
+            try {
+                const tRes = await fetch(`${BACKEND_URL}/api/admin/transactions?category=${currentCategory}&timeframe=${currentTimeframe}&admin_key=${adminKey}`);
+                allTransactions = await tRes.json();
+                renderTransactions();
+            } catch (e) {
+                console.error("Tx load error:", e);
+            }
+        }
+
+        async function loadAllData() {
+            // 1. Audit Data
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/admin/audit?timeframe=${currentTimeframe}&admin_key=${adminKey}`);
+                const data = await res.json();
+
+                if (data.agentStatus) {
+                    currentAgentStatus = data.agentStatus;
+                    renderAgentBadges();
+                }
+
+                const cbeIn = data.cbeDeposits || 0;
+                const telebirrIn = data.telebirrDeposits || 0;
+                const cbeOut = data.cbeWithdrawals || 0;
+                const telebirrOut = data.telebirrWithdrawals || 0;
+                const totalIn = data.totalDeposits || (cbeIn + telebirrIn);
+                const totalOut = data.totalWithdrawals || (cbeOut + telebirrOut);
+                const netCash = totalIn - totalOut;
+
+                document.getElementById('statTotalUsers').innerText = data.totalUsersAllTime || 0;
+                document.getElementById('periodUsersBadge').innerText = `+${data.usersInPeriod || 0} አዲስ`;
+                document.getElementById('statTotalRounds').innerText = data.totalRounds || 0;
+                
+                const totalRake = data.totalRake || 0;
+                document.getElementById('statTotalBetVolume').innerText = `${(totalRake * 5).toFixed(0)} ETB`;
+                document.getElementById('statTotalRake').innerText = `${totalRake.toFixed(2)} ETB`;
+                document.getElementById('statUserLiability').innerText = `${(data.totalUserLiability || 0).toFixed(2)} ETB`;
+
+                document.getElementById('statOverviewDep').innerText = `${totalIn.toFixed(2)} ETB`;
+                document.getElementById('statOverviewWith').innerText = `${totalOut.toFixed(2)} ETB`;
+                document.getElementById('statOverviewNetCash').innerText = `${netCash.toFixed(2)} ETB`;
+
+                const totalBonus = data.totalBonus || (data.welcomeBonus + data.referralBonus);
+                document.getElementById('statOverviewBonus').innerText = `${totalBonus.toFixed(2)} ETB`;
+
+                // 50/50 Settlement
+                document.getElementById('cbeTotalDeposits').innerText = `${cbeIn.toFixed(2)} ETB`;
+                document.getElementById('telebirrTotalDeposits').innerText = `${telebirrIn.toFixed(2)} ETB`;
+                document.getElementById('cbeTotalWithdrawals').innerText = `${cbeOut.toFixed(2)} ETB`;
+                document.getElementById('telebirrTotalWithdrawals').innerText = `${telebirrOut.toFixed(2)} ETB`;
+
+                const aymenNet = cbeIn - cbeOut;
+                const nebyuNet = telebirrIn - telebirrOut;
+                document.getElementById('aymenNetCash').innerText = `${aymenNet.toFixed(2)} ETB`;
+                document.getElementById('nebyuNetCash').innerText = `${nebyuNet.toFixed(2)} ETB`;
+
+                const verdictEl = document.getElementById('settlementVerdictText');
+                if (aymenNet > nebyuNet) {
+                    const diffToTransfer = (aymenNet - nebyuNet) / 2;
+                    verdictEl.innerHTML = `👉 <span class="text-amber-400 font-black">Aymen</span> ለ <span class="text-emerald-400 font-black">Nebyu</span> <span class="text-white font-black underline">${diffToTransfer.toFixed(2)} ETB</span> መክፈል አለበት።`;
+                } else if (nebyuNet > aymenNet) {
+                    const diffToTransfer = (nebyuNet - aymenNet) / 2;
+                    verdictEl.innerHTML = `👉 <span class="text-emerald-400 font-black">Nebyu</span> ለ <span class="text-amber-400 font-black">Aymen</span> <span class="text-white font-black underline">${diffToTransfer.toFixed(2)} ETB</span> መክፈል አለበት።`;
+                } else {
+                    verdictEl.innerHTML = `✅ ሒሳቡ ፍጹም እኩል ነው! ማንም ለማንም እዳ የለበትም።`;
+                }
+
+                document.getElementById('statWelcomeBonus').innerText = `${(data.welcomeBonus || 0).toFixed(2)} ETB`;
+                document.getElementById('statReferralBonus').innerText = `${(data.referralBonus || 0).toFixed(2)} ETB`;
+                document.getElementById('statTotalBonusGiven').innerText = `${totalBonus.toFixed(2)} ETB`;
+
+                const totalPending = (data.pendingDepositsCount || 0) + (data.pendingWithdrawalsCount || 0);
+                const hBadge = document.getElementById('headerPendingBadge');
+                const dBadge = document.getElementById('drawerPendingBadge');
+                if (totalPending > 0) {
+                    hBadge.innerText = `${totalPending} ጥያቄ`;
+                    hBadge.classList.remove('hidden');
+                    dBadge.innerText = totalPending;
+                    dBadge.classList.remove('hidden');
+                } else {
+                    hBadge.classList.add('hidden');
+                    dBadge.classList.add('hidden');
+                }
+            } catch (e) {
+                console.error("Audit load error:", e);
             }
 
-            // 3. Search Keyword check
+            // 2. Fetch Transactions for the active category
+            fetchTransactions();
+        }
+
+        function renderTransactions() {
+            const container = document.getElementById('txListContainer');
+            const searchKeyword = (document.getElementById('txSearchInput')?.value || '').toLowerCase().trim();
+
+            let filtered = Array.isArray(allTransactions) ? allTransactions : [];
+
             if (searchKeyword) {
                 filtered = filtered.filter(t => 
                     (t.first_name || '').toLowerCase().includes(searchKeyword) ||
@@ -847,7 +919,7 @@
                         <div class="flex items-center gap-2">
                             <span class="text-[9px] font-bold text-slate-500">#${idx + 1}</span>
                             <span class="w-2 h-2 rounded-full ${t.type === 'DEPOSIT' ? 'bg-green-400' : 'bg-orange-400'}"></span>
-                            <span class="font-black text-xs text-white">${t.first_name}</span>
+                            <span class="font-black text-xs text-white">${t.first_name || 'ተጫዋች'}</span>
                             <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-slate-950 border border-slate-800 text-blue-400">${t.payment_method}</span>
                         </div>
                         <span class="font-black text-xs ${t.type === 'DEPOSIT' ? 'text-green-400' : 'text-orange-400'}">
@@ -888,6 +960,10 @@
                 </div>
             `).join('');
         }
+
+
+
+
 
         async function resolveTx(id, action) {
             const url = action === 'approve' ? `${BACKEND_URL}/api/admin/approve` : `${BACKEND_URL}/api/admin/reject`;
