@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dash Bingo ⚡ Super Admin</title>
+    <title>Dash Bingo ⚡ Full Audit & Partner Settlement</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
@@ -24,7 +24,7 @@
                 <i class="fa-solid fa-calculator text-2xl text-white"></i>
             </div>
             <div>
-                <h2 class="text-base font-black text-white">የአድሚን መግቢያ</h2>
+                <h2 class="text-base font-black text-white">የኦዲት ዳሽቦርድ መግቢያ</h2>
                 <p class="text-[11px] text-slate-400">ሚስጥራዊ ቁልፍዎን (Secret Key) ያስገቡ</p>
             </div>
             <input id="adminKeyInput" type="password" placeholder="Admin Secret Key..." class="w-full text-xs font-mono p-3 rounded-2xl bg-slate-900 border border-slate-700 text-center text-white outline-none focus:border-blue-500">
@@ -43,7 +43,7 @@
                     <img src="https://i.postimg.cc/Bv4zLkh5/20261005-200757.jpg" alt="Logo" class="w-8 h-8 rounded-xl object-cover border border-blue-400">
                     <div>
                         <h2 class="text-xs font-black text-white">DASH AUDIT ⚡</h2>
-                        <span class="text-[9px] text-emerald-400 font-bold">Admin Hub</span>
+                        <span class="text-[9px] text-emerald-400 font-bold">Telebirr 50/50 Settlement</span>
                     </div>
                 </div>
                 <button onclick="toggleDrawer()" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 flex items-center justify-center text-xs">
@@ -52,8 +52,8 @@
             </div>
 
             <nav class="space-y-1.5 text-xs font-bold">
-                <button onclick="navigateMenu('overview')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-blue-400 bg-blue-500/10 border border-blue-500/20">
-                    <i class="fa-solid fa-chart-pie w-5 text-center text-blue-400"></i> አጠቃላይ ዳሽቦርድ (Overview)
+                <button onclick="navigateMenu('audit')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-blue-400 bg-blue-500/10 border border-blue-500/20">
+                    <i class="fa-solid fa-scale-balanced w-5 text-center text-amber-400"></i> የፋይናንስ ኦዲት & 50/50
                 </button>
                 <button onclick="navigateMenu('txs-pending')" class="drawer-btn w-full flex items-center justify-between p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
                     <div class="flex items-center gap-3">
@@ -61,23 +61,26 @@
                     </div>
                     <span id="drawerPendingBadge" class="px-2 py-0.5 rounded-full text-[9px] font-black bg-yellow-400 text-black hidden">0</span>
                 </button>
-                <button onclick="navigateMenu('txs-deposit')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-arrow-down w-5 text-center text-emerald-400"></i> 📥 ገቢዎች ብቻ (Deposits)
+                <button onclick="navigateMenu('txs-deposit')" class="drawer-btn w-full flex items-center justify-between p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-arrow-down w-5 text-center text-emerald-400"></i> 📥 ገቢዎች ብቻ (Deposits)
+                    </div>
+                    <span id="drawerDepBadge" class="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-500/20 text-emerald-300">0</span>
                 </button>
-                <button onclick="navigateMenu('txs-withdraw')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-arrow-up w-5 text-center text-orange-400"></i> 📤 ወጪዎች ብቻ (Withdrawals)
+                <button onclick="navigateMenu('txs-withdraw')" class="drawer-btn w-full flex items-center justify-between p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-arrow-up w-5 text-center text-orange-400"></i> 📤 ወጪዎች ብቻ (Withdrawals)
+                    </div>
+                    <span id="drawerWithBadge" class="px-2 py-0.5 rounded-full text-[9px] font-black bg-orange-500/20 text-orange-300">0</span>
                 </button>
-                <button onclick="navigateMenu('audit')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-scale-balanced w-5 text-center text-amber-400"></i> የ 50/50 ሽርክና ኦዲት
-                </button>
-                <button onclick="navigateMenu('agents')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-user-shield w-5 text-center text-emerald-400"></i> የኤጀንቶች ሁኔታ (Online/Offline)
+                <button onclick="navigateMenu('bonus')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-gift w-5 text-center text-purple-400"></i> የቦነስ ሪፖርት (ለብቻው)
                 </button>
                 <button onclick="navigateMenu('broadcast')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
                     <i class="fa-solid fa-bullhorn w-5 text-center text-yellow-400"></i> ማስታወቂያ መላኪያ (Broadcast)
                 </button>
-                <button onclick="navigateMenu('bonus')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-gift w-5 text-center text-purple-400"></i> የቦነስ ሪፖርት (ለብቻው)
+                <button onclick="navigateMenu('agents')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-user-shield w-5 text-center text-emerald-400"></i> የኤጀንት ሁኔታ (Online/Offline)
                 </button>
                 <button onclick="navigateMenu('promo')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
                     <i class="fa-solid fa-tag w-5 text-center text-pink-400"></i> ፕሮሞ ኮድ & ቦነስ ስራ
@@ -98,7 +101,7 @@
     <!-- MAIN ADMIN CONTAINER -->
     <div id="adminDashboard" class="max-w-md mx-auto p-3 space-y-3 hidden">
 
-        <!-- STICKY TOP HEADER -->
+        <!-- STICKY HEADER -->
         <header class="glass-box p-3 rounded-2xl flex justify-between items-center border border-blue-500/30 shadow-lg sticky top-2 z-40">
             <div class="flex items-center gap-2.5">
                 <button onclick="toggleDrawer()" class="w-9 h-9 rounded-xl bg-slate-800 text-white flex items-center justify-center text-sm border border-slate-700 active:scale-95 transition">
@@ -106,9 +109,9 @@
                 </button>
                 <div>
                     <h1 id="pageTitle" class="text-xs font-black text-white flex items-center gap-1">
-                        አጠቃላይ ዳሽቦርድ <span class="text-yellow-400">⚡</span>
+                        የፋይናንስ ኦዲት & 50/50 <span class="text-yellow-400">⚖️</span>
                     </h1>
-                    <span id="currentTimeframeLabel" class="text-[9px] text-blue-300 font-bold">የተመረጠው ጊዜ፡ ሁሌም (All-Time)</span>
+                    <span id="currentTimeframeLabel" class="text-[9px] text-blue-300 font-bold">የተመረጠው፡ ሁሌም (All-Time)</span>
                 </div>
             </div>
 
@@ -132,200 +135,169 @@
             <button onclick="setTimeframe('7d')" id="tf-7d" class="tf-btn px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap transition">7d</button>
             <button onclick="setTimeframe('15d')" id="tf-15d" class="tf-btn px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap transition">15d</button>
             <button onclick="setTimeframe('30d')" id="tf-30d" class="tf-btn px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap transition">30d</button>
-            <button onclick="setTimeframe('all')" id="tf-all" class="tf-btn px-3 py-1 rounded-xl text-[10px] font-black bg-blue-600 text-white border border-blue-400 whitespace-nowrap transition">All</button>
+            <button onclick="setTimeframe('all')" id="tf-all" class="tf-btn px-3 py-1 rounded-xl text-[10px] font-black bg-blue-600 text-white border border-blue-400 whitespace-nowrap transition shadow-md">All</button>
         </div>
 
-        <!-- ================= PAGE 1: OVERVIEW DASHBOARD ================= -->
-        <section id="view-overview" class="space-y-3">
+        <!-- ================= PAGE 1: 50/50 SETTLEMENT & REAL FINANCIAL AUDIT ================= -->
+        <section id="view-audit" class="space-y-3">
             
-            <div class="grid grid-cols-2 gap-2">
-                <!-- 1. ALL USERS CARD -->
-                <div class="glass-box p-3 rounded-2xl border border-blue-500/30 space-y-1">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[9px] font-bold text-slate-400 uppercase"><i class="fa-solid fa-users text-blue-400"></i> ተጠቃሚዎች</span>
-                        <span id="periodUsersBadge" class="text-[8px] bg-blue-500/20 text-blue-300 font-bold px-1.5 py-0.2 rounded-full">+0 አዲስ</span>
-                    </div>
-                    <h3 id="statTotalUsers" class="text-lg font-black text-white mt-0.5">0</h3>
-                    <p class="text-[8px] text-slate-400">ጠቅላላ የተመዘገቡ ተጫዋቾች</p>
-                </div>
-
-                <!-- 2. ALL BETS & ROUNDS CARD -->
-                <div class="glass-box p-3 rounded-2xl border border-yellow-500/30 space-y-1">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[9px] font-bold text-slate-400 uppercase"><i class="fa-solid fa-gamepad text-yellow-400"></i> ጨዋታዎች</span>
-                        <span class="text-[8px] bg-yellow-500/20 text-yellow-300 font-bold px-1.5 py-0.2 rounded-full">Rounds</span>
-                    </div>
-                    <h3 id="statTotalRounds" class="text-lg font-black text-white mt-0.5">0</h3>
-                    <p class="text-[8px] text-slate-400">የተወራረደ ጠቅላላ፡ <b id="statTotalBetVolume" class="text-yellow-300">0 ETB</b></p>
-                </div>
-
-                <!-- 3. NET PROFIT CARD (20% RAKE) -->
-                <div class="glass-box p-3 rounded-2xl border border-emerald-500/30 space-y-1">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[9px] font-bold text-slate-400 uppercase"><i class="fa-solid fa-sack-dollar text-emerald-400"></i> የተጣራ ትርፍ</span>
-                        <span class="text-[8px] bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.2 rounded-full">20% Rake</span>
-                    </div>
-                    <h3 id="statTotalRake" class="text-lg font-black text-emerald-400 mt-0.5">0.00 ETB</h3>
-                    <p class="text-[8px] text-slate-400">በተመረጠው ጊዜ የተገኘ ትርፍ</p>
-                </div>
-
-                <!-- 4. TOTAL USER BALANCE LIABILITY -->
-                <div class="glass-box p-3 rounded-2xl border border-red-500/30 space-y-1">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[9px] font-bold text-slate-400 uppercase"><i class="fa-solid fa-wallet text-red-400"></i> ዋሌት እዳ</span>
-                        <span class="text-[8px] bg-red-500/20 text-red-300 font-bold px-1.5 py-0.2 rounded-full">Liability</span>
-                    </div>
-                    <h3 id="statUserLiability" class="text-lg font-black text-red-400 mt-0.5">0.00 ETB</h3>
-                    <p class="text-[8px] text-slate-400">በተጫዋቾች እጅ ያለ ቀሪ ሒሳብ</p>
-                </div>
-            </div>
-
-            <!-- CASHFLOW SUMMARY (IN vs OUT) -->
-            <div class="glass-box p-3.5 rounded-2xl border border-slate-800 space-y-2">
-                <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-400 font-bold"><i class="fa-solid fa-arrow-down text-emerald-400 mr-1"></i> ጠቅላላ የገባ ጥሬ ገንዘብ (Deposits):</span>
-                    <span id="statOverviewDep" class="font-black text-emerald-400">0.00 ETB</span>
-                </div>
-                <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-400 font-bold"><i class="fa-solid fa-arrow-up text-orange-400 mr-1"></i> ጠቅላላ የወጣ ጥሬ ገንዘብ (Withdrawals):</span>
-                    <span id="statOverviewWith" class="font-black text-orange-400">0.00 ETB</span>
-                </div>
-                <div class="flex justify-between items-center text-xs pt-1.5 border-t border-slate-800">
-                    <span class="text-white font-black"><i class="fa-solid fa-vault text-blue-400 mr-1"></i> የተጣራ ጥሬ ገንዘብ (Net Cash):</span>
-                    <span id="statOverviewNetCash" class="font-black text-white text-sm">0.00 ETB</span>
-                </div>
-            </div>
-
-            <!-- BONUSES REPORT (COMPLETELY SEPARATE) -->
-            <div class="glass-box p-3 rounded-2xl border border-purple-500/30 flex justify-between items-center text-xs">
-                <div>
-                    <span class="text-purple-300 font-black flex items-center gap-1.5"><i class="fa-solid fa-gift text-purple-400"></i> የተሰጡ ነፃ ቦነሶች (Bonuses Only):</span>
-                    <p class="text-[9px] text-slate-400 mt-0.5">Welcome + Referral + Promo (ከባንክ ያልገባ)</p>
-                </div>
-                <span id="statOverviewBonus" class="font-black text-purple-300 text-sm">0.00 ETB</span>
-            </div>
-
-            <!-- QUICK 50/50 SETTLEMENT SHORTCUT BUTTON -->
-            <button onclick="navigateMenu('audit')" class="w-full gradient-blue p-3.5 rounded-2xl font-black text-xs text-white shadow-lg flex items-center justify-between active:scale-95 transition">
-                <span><i class="fa-solid fa-scale-balanced mr-1.5"></i> የ 50/50 ሽርክና ሂሳብ ይመልከቱ</span>
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-            </button>
-        </section>
-
-        <!-- ================= PAGE 2: 50/50 PARTNERSHIP SETTLEMENT ================= -->
-        <section id="view-audit" class="hidden space-y-3">
+            <!-- MASTER 50/50 SETTLEMENT VERDICT CARD -->
             <div class="p-4 rounded-3xl bg-gradient-to-tr from-amber-950 via-slate-900 to-amber-900 border-2 border-amber-500/60 text-center space-y-2 shadow-2xl">
                 <span class="text-[10px] font-bold text-amber-300 uppercase tracking-widest">የ 50/50 እዳ ማወራረጃ (Settlement Verdict)</span>
                 <h2 id="settlementVerdictText" class="text-base font-black text-white leading-relaxed">
                     እየተሰላ ነው...
                 </h2>
                 <div class="p-2 bg-black/50 rounded-xl text-[10px] text-amber-200 border border-amber-500/30">
-                    💡 ቦነሶች ሳይደባለቁ ትክክለኛው የባንክ ገንዘብ ብቻ ለሁለት እኩል ተካፍሏል
+                    💡 ሁሉም ገቢ ወደ Aymen ቴሌብር የገባ ስለሆነ፡ ወጪው ተቀንሶ 50% የ Nebyu ድርሻ ተሰልቷል
                 </div>
             </div>
 
-            <!-- PARTNER A: AYMEN KEMAL (CBE) -->
-            <div class="glass-box p-3.5 rounded-2xl border border-blue-500/30 space-y-2">
-                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <img src="https://i.postimg.cc/Hk1pN2VS/20260805-174301.png" alt="CBE" class="w-6 h-6 rounded object-contain">
-                        <div>
-                            <h4 class="font-black text-xs text-white">Aymen Kemal (CBE)</h4>
-                            <p class="text-[9px] text-slate-400">Acc: 1000562339427</p>
-                        </div>
-                    </div>
-                    <span class="text-[10px] bg-blue-500/20 text-blue-400 font-bold px-2 py-0.5 rounded-md">Partner A</span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                        <span class="text-[9px] text-slate-400">CBE የገባው (100%):</span>
-                        <p id="cbeTotalDeposits" class="font-black text-emerald-400">0.00 ETB</p>
-                    </div>
-                    <div>
-                        <span class="text-[9px] text-slate-400">CBE የወጣው ወጪ:</span>
-                        <p id="cbeTotalWithdrawals" class="font-black text-orange-400">0.00 ETB</p>
+            <!-- PARTNER SHARES (AYMEN vs NEBYU) -->
+            <div class="grid grid-cols-2 gap-2">
+                <!-- Aymen Share (Holds the Cash) -->
+                <div class="glass-box p-3 rounded-2xl border border-blue-500/30 space-y-1">
+                    <span class="font-black text-xs text-white">Aymen (0996910607)</span>
+                    <p class="text-[8px] text-slate-400">ጥሬ ገንዘብ የያዘው (Aymen)</p>
+                    <div class="pt-1">
+                        <span class="text-[9px] text-slate-400">የ Aymen የተጣራ ድርሻ (50%):</span>
+                        <h4 id="statAymenShare" class="font-black text-sm text-emerald-400">0.00 ETB</h4>
                     </div>
                 </div>
 
-                <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                    <span class="text-slate-300 font-bold">በ Aymen እጅ የቀረ ጥሬ ገንዘብ:</span>
-                    <span id="aymenNetCash" class="font-black text-white">0.00 ETB</span>
+                <!-- Nebyu Share -->
+                <div class="glass-box p-3 rounded-2xl border border-blue-500/30 space-y-1">
+                    <span class="font-black text-xs text-white">Nebyu (Partner)</span>
+                    <p class="text-[8px] text-slate-400">ተካፋይ (Partner)</p>
+                    <div class="pt-1">
+                        <span class="text-[9px] text-slate-400">የ Nebyu የተጣራ ድርሻ (50%):</span>
+                        <h4 id="statNebyuShare" class="font-black text-sm text-emerald-400">0.00 ETB</h4>
+                    </div>
                 </div>
             </div>
 
-            <!-- PARTNER B: NEBYU (TELEBIRR) -->
-            <div class="glass-box p-3.5 rounded-2xl border border-blue-500/30 space-y-2">
-                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <img src="https://i.postimg.cc/Hk1pN2VS/20260805-174415.png" alt="Telebirr" class="w-6 h-6 rounded object-contain">
-                        <div>
-                            <h4 class="font-black text-xs text-white">Nebyu (Telebirr)</h4>
-                            <p class="text-[9px] text-slate-400">Phone: 0968260447</p>
-                        </div>
-                    </div>
-                    <span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded-md">Partner B</span>
+            <!-- REAL MONEY CASHFLOW (TELEBIRR REAL IN vs OUT) -->
+            <div class="glass-box p-3.5 rounded-2xl border border-emerald-500/30 space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-bold"><i class="fa-solid fa-arrow-down text-emerald-400 mr-1"></i> ጠቅላላ የገባ እውነተኛ ገንዘብ (Deposits):</span>
+                    <span id="statRealCashIn" class="font-black text-emerald-400">0.00 ETB</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-bold"><i class="fa-solid fa-arrow-up text-orange-400 mr-1"></i> ጠቅላላ የወጣ ጥሬ ገንዘብ (Withdrawals):</span>
+                    <span id="statRealCashOut" class="font-black text-orange-400">0.00 ETB</span>
+                </div>
+                <div class="flex justify-between items-center text-xs pt-1.5 border-t border-slate-800">
+                    <span class="text-white font-black"><i class="fa-solid fa-vault text-blue-400 mr-1"></i> በእጃችሁ ያለ የተጣራ ጥሬ ገንዘብ (Net Cash):</span>
+                    <span id="statNetLiquidCash" class="font-black text-white text-sm">0.00 ETB</span>
+                </div>
+            </div>
+
+            <!-- SYSTEM METRICS: USERS, BETS, LIABILITIES -->
+            <div class="grid grid-cols-2 gap-2">
+                <div class="glass-box p-3 rounded-2xl border border-slate-800 space-y-1">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase"><i class="fa-solid fa-users text-blue-400"></i> ተጠቃሚዎች</span>
+                    <h3 id="statTotalUsers" class="text-base font-black text-white">0</h3>
+                    <p class="text-[8px] text-blue-300 font-bold" id="statPeriodUsers">+0 አዲስ በተመረጠው ጊዜ</p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                        <span class="text-[9px] text-slate-400">Telebirr የገባው (100%):</span>
-                        <p id="telebirrTotalDeposits" class="font-black text-emerald-400">0.00 ETB</p>
-                    </div>
-                    <div>
-                        <span class="text-[9px] text-slate-400">Telebirr የወጣው ወጪ:</span>
-                        <p id="telebirrTotalWithdrawals" class="font-black text-orange-400">0.00 ETB</p>
-                    </div>
+                <div class="glass-box p-3 rounded-2xl border border-slate-800 space-y-1">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase"><i class="fa-solid fa-gamepad text-yellow-400"></i> የተደረጉ ዙሮች</span>
+                    <h3 id="statTotalRounds" class="text-base font-black text-white">0</h3>
+                    <p class="text-[8px] text-yellow-300 font-bold">20% Rake: <span id="statTotalRake">0.00 ETB</span></p>
                 </div>
+            </div>
 
-                <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                    <span class="text-slate-300 font-bold">በ Nebyu እጅ የቀረ ጥሬ ገንዘብ:</span>
-                    <span id="nebyuNetCash" class="font-black text-white">0.00 ETB</span>
+            <!-- WALLET LIABILITIES (REAL vs BONUS) -->
+            <div class="glass-box p-3 rounded-2xl border border-red-500/30 flex justify-between items-center text-xs">
+                <div>
+                    <span class="text-slate-400 font-bold">ተጫዋቾች ሊያወጡት የሚችሉት እዳ (Real Liability):</span>
+                    <p class="text-[9px] text-slate-500">ተጫዋቾች በ Real Wallet ውስጥ ያስቀመጡት</p>
                 </div>
+                <span id="statRealLiability" class="font-black text-red-400 text-sm">0.00 ETB</span>
+            </div>
+
+            <!-- QUICK SHORTCUT BUTTONS -->
+            <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="navigateMenu('txs-pending')" class="p-3 bg-yellow-950/40 border border-yellow-500/40 rounded-2xl text-left active:scale-95 transition">
+                    <div class="flex items-center gap-1.5 text-yellow-400 font-black text-xs">
+                        <i class="fa-solid fa-clock-rotate-left"></i> ተጠባባቂዎች (Pending)
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-0.5" id="quickPendingText">0 ጥያቄዎች አሉ</p>
+                </button>
+                <button onclick="navigateMenu('txs-deposit')" class="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-2xl text-left active:scale-95 transition">
+                    <div class="flex items-center gap-1.5 text-emerald-400 font-black text-xs">
+                        <i class="fa-solid fa-arrow-down"></i> ገቢዎች ብቻ
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">300 ረድፎች</p>
+                </button>
             </div>
         </section>
 
-        <!-- ================= PAGE 3: AGENTS STATUS CONTROLLER ================= -->
-        <section id="view-agents" class="hidden space-y-3">
-            <div class="glass-box p-4 rounded-3xl border border-emerald-500/30 space-y-3">
-                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-                    <div>
-                        <h3 class="text-xs font-black text-white flex items-center gap-1.5">
-                            <i class="fa-solid fa-user-shield text-emerald-400"></i> የኤጀንቶች የቀጥታ ሁኔታ (Live Toggles)
-                        </h3>
-                        <p class="text-[9px] text-slate-400 mt-0.5">አፑ ላይ ለተጫዋቾች የሚታየውን ሁኔታ በ 1-ጠቅታ ቀይር</p>
-                    </div>
-                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
-                        Live
-                    </span>
+        <!-- ================= PAGE 2: 300 ROWS TRANSACTIONS VIEW ================= -->
+        <section id="view-txs" class="hidden space-y-3">
+            <div class="flex gap-1.5 overflow-x-auto no-scrollbar text-[10px] font-bold">
+                <button onclick="setTxCategory('PENDING')" id="cBtn-PENDING" class="px-3 py-1.5 rounded-xl bg-blue-600 text-white font-black border border-blue-400 flex items-center gap-1 whitespace-nowrap">
+                    <i class="fa-solid fa-clock"></i> ⏳ ተጠባባቂዎች (Pending)
+                </button>
+                <button onclick="setTxCategory('DEPOSIT')" id="cBtn-DEPOSIT" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 flex items-center gap-1 whitespace-nowrap">
+                    <i class="fa-solid fa-arrow-down"></i> 📥 ገቢዎች ብቻ
+                </button>
+                <button onclick="setTxCategory('WITHDRAW')" id="cBtn-WITHDRAW" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 flex items-center gap-1 whitespace-nowrap">
+                    <i class="fa-solid fa-arrow-up"></i> 📤 ወጪዎች ብቻ
+                </button>
+                <button onclick="setTxCategory('APPROVED')" id="cBtn-APPROVED" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                    የጸደቁ (Approved)
+                </button>
+                <button onclick="setTxCategory('REJECTED')" id="cBtn-REJECTED" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                    ውድቅ የሆኑ
+                </button>
+                <button onclick="setTxCategory('ALL')" id="cBtn-ALL" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                    ሁሉም (300 ረድፍ)
+                </button>
+            </div>
+
+            <div class="glass-box p-2 rounded-2xl border border-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs ml-1"></i>
+                <input id="txSearchInput" oninput="renderTransactions()" type="text" placeholder="በተገኙት ረድፎች ውስጥ ፈልግ (ስም፣ ስልክ፣ ብር)..." class="w-full text-xs bg-transparent text-white outline-none">
+            </div>
+
+            <div class="flex justify-between items-center text-[10px] px-1 text-slate-400">
+                <span id="txCategoryTitle" class="font-bold text-white">የተመረጠው፡ ተጠባባቂዎች ብቻ (Pending)</span>
+                <span>የተገኙ ረድፎች፡ <b id="txCountBadge" class="text-blue-400">0</b></span>
+            </div>
+
+            <div id="txListContainer" class="space-y-2.5 max-h-[650px] overflow-y-auto pr-1"></div>
+        </section>
+
+        <!-- ================= PAGE 3: BONUSES REPORT ONLY (ለብቻው) ================= -->
+        <section id="view-bonus" class="hidden space-y-3">
+            <div class="p-4 rounded-3xl bg-gradient-to-tr from-purple-950 via-slate-900 to-indigo-950 border border-purple-500/40 space-y-3">
+                <div>
+                    <h3 class="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-gift"></i> የተሰጡ ነፃ ቦነሶች (Promotions & Giveaways)
+                    </h3>
+                    <p class="text-[10px] text-slate-400 mt-0.5">ማስታወሻ፡ ቦነስ የሲስተም ማበረታቻ እንጂ እውነተኛ የባንክ ገንዘብ አይደለም</p>
                 </div>
 
-                <!-- Agent 1: Aymen (CBE) -->
-                <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                        <img src="https://i.postimg.cc/Hk1pN2VS/20260805-174301.png" alt="CBE" class="w-7 h-7 rounded object-contain">
-                        <div>
-                            <span class="font-black text-xs text-white">Aymen Kemal (CBE)</span>
-                            <p id="agentCbeBadge" class="text-[9px] text-emerald-400 font-bold">🟢 Online (ስራ ላይ)</p>
-                        </div>
+                <div class="space-y-2 text-xs pt-2 border-t border-purple-500/20">
+                    <div class="flex justify-between items-center p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                        <span class="text-slate-400">የ 20 ETB Welcome Bonus ድምር:</span>
+                        <span id="statWelcomeBonus" class="font-black text-purple-300">0.00 ETB</span>
                     </div>
-                    <button onclick="toggleAgentOnline('cbe')" id="btnAgentCbeToggle" class="px-3.5 py-1.5 rounded-xl font-black text-xs bg-emerald-600 text-white shadow-md active:scale-95 transition">
-                        ቀይር
-                    </button>
-                </div>
 
-                <!-- Agent 2: Nebyu (Telebirr) -->
-                <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                        <img src="https://i.postimg.cc/Hk1pN2VS/20260805-174415.png" alt="Telebirr" class="w-7 h-7 rounded object-contain">
-                        <div>
-                            <span class="font-black text-xs text-white">Nebyu (Telebirr)</span>
-                            <p id="agentTelebirrBadge" class="text-[9px] text-emerald-400 font-bold">🟢 Online (ስራ ላይ)</p>
-                        </div>
+                    <div class="flex justify-between items-center p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                        <span class="text-slate-400">የሪፈራል ቦነስ ድምር (10 ETB በሰው):</span>
+                        <span id="statReferralBonus" class="font-black text-purple-300">0.00 ETB</span>
                     </div>
-                    <button onclick="toggleAgentOnline('telebirr')" id="btnAgentTelebirrToggle" class="px-3.5 py-1.5 rounded-xl font-black text-xs bg-emerald-600 text-white shadow-md active:scale-95 transition">
-                        ቀይር
-                    </button>
+
+                    <div class="flex justify-between items-center p-3 bg-purple-950/60 rounded-xl border border-purple-500/40">
+                        <span class="text-white font-bold">ጠቅላላ የተሰጠ የቦነስ ብር:</span>
+                        <span id="statTotalBonusGiven" class="font-black text-yellow-300 text-sm">0.00 ETB</span>
+                    </div>
+
+                    <div class="flex justify-between items-center p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                        <span class="text-slate-400">በተጫዋቾች ዋሌት ውስጥ ያለ የቦነስ እዳ:</span>
+                        <span id="statBonusLiability" class="font-black text-yellow-400">0.00 ETB</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -385,72 +357,38 @@
             </div>
         </section>
 
-        <!-- ================= PAGE 5: 300 ROWS TRANSACTIONS VIEW (DIRECT SQL FETCH) ================= -->
-        <section id="view-txs" class="hidden space-y-3">
-            <div class="flex gap-1.5 overflow-x-auto no-scrollbar text-[10px] font-bold">
-                <button onclick="setTxCategory('PENDING')" id="cBtn-PENDING" class="px-3 py-1.5 rounded-xl bg-blue-600 text-white font-black border border-blue-400 flex items-center gap-1 whitespace-nowrap">
-                    <i class="fa-solid fa-clock"></i> ⏳ ተጠባባቂዎች (Pending)
-                </button>
-                <button onclick="setTxCategory('DEPOSIT')" id="cBtn-DEPOSIT" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 flex items-center gap-1 whitespace-nowrap">
-                    <i class="fa-solid fa-arrow-down"></i> 📥 ገቢዎች ብቻ
-                </button>
-                <button onclick="setTxCategory('WITHDRAW')" id="cBtn-WITHDRAW" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 flex items-center gap-1 whitespace-nowrap">
-                    <i class="fa-solid fa-arrow-up"></i> 📤 ወጪዎች ብቻ
-                </button>
-                <button onclick="setTxCategory('APPROVED')" id="cBtn-APPROVED" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    የጸደቁ (Approved)
-                </button>
-                <button onclick="setTxCategory('REJECTED')" id="cBtn-REJECTED" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    ውድቅ የሆኑ
-                </button>
-                <button onclick="setTxCategory('ALL')" id="cBtn-ALL" class="px-3 py-1.5 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    ሁሉም (300 ረድፍ)
-                </button>
-            </div>
-
-            <div class="glass-box p-2 rounded-2xl border border-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs ml-1"></i>
-                <input id="txSearchInput" oninput="renderTransactions()" type="text" placeholder="በተገኙት ረድፎች ውስጥ ፈልግ (ስም፣ ስልክ፣ ብር)..." class="w-full text-xs bg-transparent text-white outline-none">
-            </div>
-
-            <div class="flex justify-between items-center text-[10px] px-1 text-slate-400">
-                <span id="txCategoryTitle" class="font-bold text-white">የተመረጠው፡ ተጠባባቂዎች ብቻ (Pending)</span>
-                <span>የተገኙ ረድፎች፡ <b id="txCountBadge" class="text-blue-400">0</b></span>
-            </div>
-
-            <div id="txListContainer" class="space-y-2.5 max-h-[650px] overflow-y-auto pr-1"></div>
-        </section>
-
-        <!-- ================= PAGE 6: BONUSES ONLY ================= -->
-        <section id="view-bonus" class="hidden space-y-3">
-            <div class="p-4 rounded-3xl bg-gradient-to-tr from-purple-950 via-slate-900 to-indigo-950 border border-purple-500/40 space-y-3">
-                <div>
-                    <h3 class="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-gift"></i> የተሰጡ ነፃ ቦነሶች (Promotions & Giveaways)
-                    </h3>
-                    <p class="text-[10px] text-slate-400 mt-0.5">ማስታወሻ፡ ቦነስ የሲስተም ማበረታቻ እንጂ እውነተኛ የባንክ ገንዘብ አይደለም</p>
+        <!-- ================= PAGE 5: AGENTS STATUS CONTROLLER ================= -->
+        <section id="view-agents" class="hidden space-y-3">
+            <div class="glass-box p-4 rounded-3xl border border-emerald-500/30 space-y-3">
+                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                    <div>
+                        <h3 class="text-xs font-black text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-shield text-emerald-400"></i> የቴሌብር ኤጀንት ሁኔታ (Live Toggle)
+                        </h3>
+                        <p class="text-[9px] text-slate-400 mt-0.5">አፑ ላይ ለተጫዋቾች የሚታየውን ሁኔታ በ 1-ጠቅታ ቀይር</p>
+                    </div>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
+                        Live
+                    </span>
                 </div>
 
-                <div class="space-y-2 text-xs pt-2 border-t border-purple-500/20">
-                    <div class="flex justify-between items-center p-2.5 bg-slate-950 rounded-xl border border-slate-800">
-                        <span class="text-slate-400">የ 20 ETB Welcome Bonus ድምር:</span>
-                        <span id="statWelcomeBonus" class="font-black text-purple-300">0.00 ETB</span>
+                <!-- Telebirr Agent Aymen -->
+                <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex justify-between items-center">
+                    <div class="flex items-center gap-2.5">
+                        <img src="https://i.postimg.cc/1zH5wqRj/20260805-174415.png" alt="Telebirr" class="w-8 h-8 rounded-lg object-contain">
+                        <div>
+                            <span class="font-black text-xs text-white">Aymen (0996910607)</span>
+                            <p id="agentTelebirrBadge" class="text-[9px] text-emerald-400 font-bold">🟢 Online (ስራ ላይ)</p>
+                        </div>
                     </div>
-
-                    <div class="flex justify-between items-center p-2.5 bg-slate-950 rounded-xl border border-slate-800">
-                        <span class="text-slate-400">የሪፈራል ቦነስ ድምር (10 ETB በሰው):</span>
-                        <span id="statReferralBonus" class="font-black text-purple-300">0.00 ETB</span>
-                    </div>
-
-                    <div class="flex justify-between items-center p-3 bg-purple-950/60 rounded-xl border border-purple-500/40">
-                        <span class="text-white font-bold">ጠቅላላ የተሰጠ የቦነስ ብር:</span>
-                        <span id="statTotalBonusGiven" class="font-black text-yellow-300 text-sm">0.00 ETB</span>
-                    </div>
+                    <button onclick="toggleAgentOnline()" id="btnAgentTelebirrToggle" class="px-3.5 py-1.5 rounded-xl font-black text-xs bg-emerald-600 text-white shadow-md active:scale-95 transition">
+                        ቀይር
+                    </button>
                 </div>
             </div>
         </section>
 
-        <!-- ================= PAGE 7: PROMO CODES & WEEKLY PAYOUT ================= -->
+        <!-- ================= PAGE 6: PROMO CODES & WEEKLY PAYOUT ================= -->
         <section id="view-promo" class="hidden space-y-3">
             <div class="glass-box p-3.5 rounded-2xl border border-yellow-500/30 space-y-2">
                 <h3 class="font-black text-xs text-white">የሳምንቱ ቦነስ ለ 10 ሰዎች ማከፋፈያ</h3>
@@ -477,9 +415,9 @@
 
         let adminKey = localStorage.getItem('dash_admin_key') || '';
         let allTransactions = [];
-        let currentCategory = 'PENDING'; // By default open PENDING so all requests appear!
+        let currentCategory = 'PENDING';
         let currentTimeframe = 'all'; 
-        let currentAgentStatus = { cbe: { isOnline: true }, telebirr: { isOnline: true } };
+        let currentAgentOnline = true;
 
         const timeframeTitles = {
             '30m': 'ያለፉት 30 ደቂቃዎች (30m)',
@@ -542,8 +480,9 @@
         }
 
         function navigateMenu(menuId) {
-            ['overview', 'audit', 'agents', 'broadcast', 'txs', 'bonus', 'promo'].forEach(m => {
-                document.getElementById(`view-${m}`).classList.add('hidden');
+            ['audit', 'txs', 'bonus', 'broadcast', 'agents', 'promo'].forEach(m => {
+                const el = document.getElementById(`view-${m}`);
+                if (el) el.classList.add('hidden');
             });
 
             if (menuId.startsWith('txs-')) {
@@ -551,18 +490,18 @@
                 const cat = menuId.replace('txs-', '').toUpperCase();
                 setTxCategory(cat);
             } else {
-                document.getElementById(`view-${menuId}`).classList.remove('hidden');
+                const target = document.getElementById(`view-${menuId}`);
+                if (target) target.classList.remove('hidden');
             }
 
             const titles = {
-                'overview': 'አጠቃላይ ዳሽቦርድ ⚡',
-                'audit': 'የ 50/50 ሽርክና ኦዲት ⚖️',
-                'agents': 'የኤጀንቶች ሁኔታ (Online/Offline) 🛡️',
-                'broadcast': '📢 ማስታወቂያ መላኪያ (Broadcast)',
+                'audit': 'የፋይናንስ ኦዲት & 50/50 ⚖️',
                 'txs-pending': '⏳ ተጠባባቂዎች (Pending)',
                 'txs-deposit': '📥 ገቢዎች ብቻ (Deposits)',
                 'txs-withdraw': '📤 ወጪዎች ብቻ (Withdrawals)',
                 'bonus': 'የቦነስ ሪፖርት (ለብቻው) 🎁',
+                'broadcast': '📢 ማስታወቂያ መላኪያ (Broadcast)',
+                'agents': 'የኤጀንት ሁኔታ (Online/Offline) 🛡️',
                 'promo': 'ፕሮሞ ኮድ & ቦነስ ስራ 🏷️'
             };
             document.getElementById('pageTitle').innerHTML = titles[menuId] || 'ዳሽቦርድ';
@@ -582,48 +521,37 @@
                 activeBtn.className = "tf-btn px-3 py-1 rounded-xl text-[10px] font-black bg-blue-600 text-white border border-blue-400 whitespace-nowrap transition shadow-md";
             }
 
-            document.getElementById('currentTimeframeLabel').innerText = `የተመረጠው ጊዜ፡ ${timeframeTitles[tf] || tf}`;
+            document.getElementById('currentTimeframeLabel').innerText = `የተመረጠው፡ ${timeframeTitles[tf] || tf}`;
             loadAllData();
         }
 
         // AGENT ONLINE/OFFLINE TOGGLING
-        async function toggleAgentOnline(agent) {
-            const nextState = !currentAgentStatus[agent].isOnline;
+        async function toggleAgentOnline() {
+            const nextState = !currentAgentOnline;
             try {
                 const res = await fetch(`${BACKEND_URL}/api/admin/agents/toggle`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
-                    body: JSON.stringify({ agent, isOnline: nextState })
+                    body: JSON.stringify({ agent: 'telebirr', isOnline: nextState })
                 });
                 const data = await res.json();
                 if (data.success) {
-                    currentAgentStatus = data.agentStatus;
-                    renderAgentBadges();
+                    currentAgentOnline = data.agentStatus.telebirr.isOnline;
+                    renderAgentBadge();
                 }
             } catch (e) {
                 alert("ሁኔታውን መቀየር አልተቻለም!");
             }
         }
 
-        function renderAgentBadges() {
-            const cbeOnline = currentAgentStatus.cbe.isOnline;
-            const teleOnline = currentAgentStatus.telebirr.isOnline;
-
-            document.getElementById('agentCbeBadge').innerHTML = cbeOnline 
+        function renderAgentBadge() {
+            document.getElementById('agentTelebirrBadge').innerHTML = currentAgentOnline 
                 ? '<span class="text-emerald-400 font-bold">🟢 Online (ስራ ላይ)</span>' 
                 : '<span class="text-red-400 font-bold">🔴 Offline (እረፍት ላይ)</span>';
-            document.getElementById('btnAgentCbeToggle').className = cbeOnline
+            document.getElementById('btnAgentTelebirrToggle').className = currentAgentOnline
                 ? "px-3.5 py-1.5 rounded-xl font-black text-xs bg-red-600 text-white shadow-md active:scale-95 transition"
                 : "px-3.5 py-1.5 rounded-xl font-black text-xs bg-emerald-600 text-white shadow-md active:scale-95 transition";
-            document.getElementById('btnAgentCbeToggle').innerText = cbeOnline ? "አጥፋ (Make Offline)" : "አብራ (Make Online)";
-
-            document.getElementById('agentTelebirrBadge').innerHTML = teleOnline 
-                ? '<span class="text-emerald-400 font-bold">🟢 Online (ስራ ላይ)</span>' 
-                : '<span class="text-red-400 font-bold">🔴 Offline (እረፍት ላይ)</span>';
-            document.getElementById('btnAgentTelebirrToggle').className = teleOnline
-                ? "px-3.5 py-1.5 rounded-xl font-black text-xs bg-red-600 text-white shadow-md active:scale-95 transition"
-                : "px-3.5 py-1.5 rounded-xl font-black text-xs bg-emerald-600 text-white shadow-md active:scale-95 transition";
-            document.getElementById('btnAgentTelebirrToggle').innerText = teleOnline ? "አጥፋ (Make Offline)" : "አብራ (Make Online)";
+            document.getElementById('btnAgentTelebirrToggle').innerText = currentAgentOnline ? "አጥፋ (Offline አድርግ)" : "አብራ (Online አድርግ)";
         }
 
         function loadTemplate(type) {
@@ -662,7 +590,6 @@
             }
         }
 
-        // ⚡ CATEGORY SWITCHER (FETCHES DIRECTLY FROM SERVER)
         function setTxCategory(category) {
             currentCategory = category;
 
@@ -687,7 +614,6 @@
             fetchTransactions();
         }
 
-        // ⚡ DIRECT SERVER-SIDE CATEGORY FETCHING
         async function fetchTransactions() {
             try {
                 const tRes = await fetch(`${BACKEND_URL}/api/admin/transactions?category=${currentCategory}&timeframe=${currentTimeframe}&admin_key=${adminKey}`);
@@ -699,69 +625,59 @@
         }
 
         async function loadAllData() {
-            // 1. Audit Data
             try {
+                // 1. Fetch Audit directly from Backend SQL
                 const res = await fetch(`${BACKEND_URL}/api/admin/audit?timeframe=${currentTimeframe}&admin_key=${adminKey}`);
                 const data = await res.json();
 
-                if (data.agentStatus) {
-                    currentAgentStatus = data.agentStatus;
-                    renderAgentBadges();
+                if (data.agentStatus && data.agentStatus.telebirr) {
+                    currentAgentOnline = data.agentStatus.telebirr.isOnline;
+                    renderAgentBadge();
                 }
 
-                const cbeIn = data.cbeDeposits || 0;
-                const telebirrIn = data.telebirrDeposits || 0;
-                const cbeOut = data.cbeWithdrawals || 0;
-                const telebirrOut = data.telebirrWithdrawals || 0;
-                const totalIn = data.totalDeposits || (cbeIn + telebirrIn);
-                const totalOut = data.totalWithdrawals || (cbeOut + telebirrOut);
-                const netCash = totalIn - totalOut;
+                const totalDep = data.totalDeposits || 0;
+                const totalWith = data.totalWithdrawals || 0;
+                const netCash = totalDep - totalWith;
+                const aymenShare = data.aymenShare || (netCash * 0.5);
+                const nebyuShare = data.nebyuShare || (netCash * 0.5);
 
-                document.getElementById('statTotalUsers').innerText = data.totalUsersAllTime || 0;
-                document.getElementById('periodUsersBadge').innerText = `+${data.usersInPeriod || 0} አዲስ`;
-                document.getElementById('statTotalRounds').innerText = data.totalRounds || 0;
-                
-                const totalRake = data.totalRake || 0;
-                document.getElementById('statTotalBetVolume').innerText = `${(totalRake * 5).toFixed(0)} ETB`;
-                document.getElementById('statTotalRake').innerText = `${totalRake.toFixed(2)} ETB`;
-                document.getElementById('statUserLiability').innerText = `${(data.totalUserLiability || 0).toFixed(2)} ETB`;
-
-                document.getElementById('statOverviewDep').innerText = `${totalIn.toFixed(2)} ETB`;
-                document.getElementById('statOverviewWith').innerText = `${totalOut.toFixed(2)} ETB`;
-                document.getElementById('statOverviewNetCash').innerText = `${netCash.toFixed(2)} ETB`;
-
-                const totalBonus = data.totalBonus || (data.welcomeBonus + data.referralBonus);
-                document.getElementById('statOverviewBonus').innerText = `${totalBonus.toFixed(2)} ETB`;
-
-                // 50/50 Settlement
-                document.getElementById('cbeTotalDeposits').innerText = `${cbeIn.toFixed(2)} ETB`;
-                document.getElementById('telebirrTotalDeposits').innerText = `${telebirrIn.toFixed(2)} ETB`;
-                document.getElementById('cbeTotalWithdrawals').innerText = `${cbeOut.toFixed(2)} ETB`;
-                document.getElementById('telebirrTotalWithdrawals').innerText = `${telebirrOut.toFixed(2)} ETB`;
-
-                const aymenNet = cbeIn - cbeOut;
-                const nebyuNet = telebirrIn - telebirrOut;
-                document.getElementById('aymenNetCash').innerText = `${aymenNet.toFixed(2)} ETB`;
-                document.getElementById('nebyuNetCash').innerText = `${nebyuNet.toFixed(2)} ETB`;
+                // Settlement Verdict
+                document.getElementById('statAymenShare').innerText = `${aymenShare.toFixed(2)} ETB`;
+                document.getElementById('statNebyuShare').innerText = `${nebyuShare.toFixed(2)} ETB`;
 
                 const verdictEl = document.getElementById('settlementVerdictText');
-                if (aymenNet > nebyuNet) {
-                    const diffToTransfer = (aymenNet - nebyuNet) / 2;
-                    verdictEl.innerHTML = `👉 <span class="text-amber-400 font-black">Aymen</span> ለ <span class="text-emerald-400 font-black">Nebyu</span> <span class="text-white font-black underline">${diffToTransfer.toFixed(2)} ETB</span> መክፈል አለበት።`;
-                } else if (nebyuNet > aymenNet) {
-                    const diffToTransfer = (nebyuNet - aymenNet) / 2;
-                    verdictEl.innerHTML = `👉 <span class="text-emerald-400 font-black">Nebyu</span> ለ <span class="text-amber-400 font-black">Aymen</span> <span class="text-white font-black underline">${diffToTransfer.toFixed(2)} ETB</span> መክፈል አለበት።`;
+                if (netCash > 0) {
+                    verdictEl.innerHTML = `👉 <span class="text-amber-400 font-black">Aymen</span> ለ <span class="text-emerald-400 font-black">Nebyu</span> <span class="text-white font-black underline">${nebyuShare.toFixed(2)} ETB</span> ማስተላለፍ አለበት።`;
+                } else if (netCash < 0) {
+                    verdictEl.innerHTML = `👉 <span class="text-emerald-400 font-black">Nebyu</span> ለ <span class="text-amber-400 font-black">Aymen</span> <span class="text-white font-black underline">${Math.abs(nebyuShare).toFixed(2)} ETB</span> ማካካስ አለበት።`;
                 } else {
-                    verdictEl.innerHTML = `✅ ሒሳቡ ፍጹም እኩል ነው! ማንም ለማንም እዳ የለበትም።`;
+                    verdictEl.innerHTML = `✅ ሒሳቡ እኩል ነው! ማንም ለማንም እዳ የለበትም።`;
                 }
 
+                // Real Cash Flow
+                document.getElementById('statRealCashIn').innerText = `${totalDep.toFixed(2)} ETB`;
+                document.getElementById('statRealCashOut').innerText = `${totalWith.toFixed(2)} ETB`;
+                document.getElementById('statNetLiquidCash').innerText = `${netCash.toFixed(2)} ETB`;
+
+                // System metrics
+                document.getElementById('statTotalUsers').innerText = data.totalUsersAllTime || 0;
+                document.getElementById('statPeriodUsers').innerText = `+${data.usersInPeriod || 0} አዲስ በተመረጠው ጊዜ`;
+                document.getElementById('statTotalRounds').innerText = data.totalRounds || 0;
+                document.getElementById('statTotalRake').innerText = `${(data.totalRake || 0).toFixed(2)} ETB`;
+                document.getElementById('statRealLiability').innerText = `${(data.totalRealLiability || 0).toFixed(2)} ETB`;
+
+                // Bonuses Page
                 document.getElementById('statWelcomeBonus').innerText = `${(data.welcomeBonus || 0).toFixed(2)} ETB`;
                 document.getElementById('statReferralBonus').innerText = `${(data.referralBonus || 0).toFixed(2)} ETB`;
-                document.getElementById('statTotalBonusGiven').innerText = `${totalBonus.toFixed(2)} ETB`;
+                document.getElementById('statTotalBonusGiven').innerText = `${(data.totalBonus || 0).toFixed(2)} ETB`;
+                document.getElementById('statBonusLiability').innerText = `${(data.totalBonusLiability || 0).toFixed(2)} ETB`;
 
+                // Pending Badges
                 const totalPending = (data.pendingDepositsCount || 0) + (data.pendingWithdrawalsCount || 0);
                 const hBadge = document.getElementById('headerPendingBadge');
                 const dBadge = document.getElementById('drawerPendingBadge');
+                document.getElementById('quickPendingText').innerText = `${totalPending} ጥያቄዎች አሉ`;
+
                 if (totalPending > 0) {
                     hBadge.innerText = `${totalPending} ጥያቄ`;
                     hBadge.classList.remove('hidden');
@@ -775,7 +691,7 @@
                 console.error("Audit load error:", e);
             }
 
-            // 2. Fetch Transactions for active category
+            // 2. Fetch Transactions for the active category
             fetchTransactions();
         }
 
@@ -789,6 +705,7 @@
                 filtered = filtered.filter(t => 
                     (t.first_name || '').toLowerCase().includes(searchKeyword) ||
                     (t.account_number || '').toLowerCase().includes(searchKeyword) ||
+                    (t.trx_ref || '').toLowerCase().includes(searchKeyword) ||
                     (t.amount || '').toString().includes(searchKeyword) ||
                     (t.sms_text || '').toLowerCase().includes(searchKeyword)
                 );
@@ -814,6 +731,12 @@
                             ${t.type === 'DEPOSIT' ? '+' : '-'}${parseFloat(t.amount).toFixed(2)} ETB
                         </span>
                     </div>
+
+                    ${t.trx_ref ? `
+                        <div class="p-1.5 bg-slate-950 rounded-xl border border-slate-800 text-[10px] flex justify-between items-center">
+                            <span class="text-slate-400">Transaction Ref:</span>
+                            <span class="font-mono font-bold text-yellow-300">${t.trx_ref}</span>
+                        </div>` : ''}
 
                     ${t.account_number ? `
                         <div class="p-2 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center text-[10px]">
