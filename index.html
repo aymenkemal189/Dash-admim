@@ -909,9 +909,11 @@
                     ${tgId ? `
                         <div class="flex justify-between items-center text-[10px] bg-slate-950/70 px-2.5 py-1.5 rounded-xl border border-slate-800/80">
                             <span class="text-slate-400">Telegram ID: <b class="font-mono text-slate-200">${tgId}</b></span>
+                            <div class="flex items-center gap-3">
+                            ${currentCategory === 'REJECTED' ? `<button onclick="jumpToCashback('${tgId}', '${(t.first_name || '').replace(/'/g, "")}', ${parseFloat(t.amount) || 0})" class="text-[9px] font-black text-green-400 hover:text-green-300 flex items-center gap-1"><i class="fa-solid fa-gift"></i> ካሽባክ</button>` : ''}
                             <button onclick="quickJumpToTopup('${tgId}', '${(t.first_name || '').replace(/'/g, "")}')" class="text-[9px] font-black text-yellow-400 hover:text-yellow-300 flex items-center gap-1">
-                                <i class="fa-solid fa-bolt"></i> ብር ሙላ / ካሽባክ
-                            </button>
+                                <i class="fa-solid fa-bolt"></i> ብር ሙላ
+                            </button></div>
                         </div>
                     ` : ''}
 
@@ -1437,6 +1439,81 @@
                 btn.disabled = false;
                 btn.innerHTML = '➕ ሒሳቡን ጨምር (Credit Balance)';
             }
+        }
+
+    
+        // ===== FIX 2: ከ200 በላይ + አዲስ Reject የተደረጉ + ካሽባክ በተን =====
+        let pendingCashbackFocus = null;
+
+        async function loadCashbackCandidates() {
+            const container = document.getElementById('cashbackCandidatesContainer');
+            const icon = document.getElementById('cashbackRefreshIcon');
+            if (icon) icon.classList.add('fa-spin');
+            container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">ተጠቃሚዎችን በመጫን ላይ...</div>`;
+            try {
+                const map = {};
+                const add = (c) => {
+                    const tg = String(c.telegram_id || '');
+                    const key = tg || String(c.user_id || c.id);
+                    if (!key) return;
+                    const amt = parseFloat(c.total_rejected || c.rejected_amount || c.amount || 0);
+                    if (map[key]) return; // ከሰርቨር እጩዎች ቅድሚያ
+                    map[key] = {
+                        id: key, user_id: c.user_id || null, telegram_id: tg || c.user_id || '',
+                        first_name: c.first_name || c.name || c.username || 'ተጫዋች',
+                        amount: amt, count: c.rejected_count || c.count || 1
+                    };
+                };
+                // 1) ከሰርቨር እጩዎች (ገደብ እንዳይኖር limit params ጨምሮ)
+                let r = await apiCall('/api/admin/cashback/candidates?limit=100000&all=true&timeframe=all');
+                if (r.res.ok && Array.isArray(r.data)) r.data.forEach(add);
+                // 2) ሁሉንም Reject የተደረጉ ትራንዛክሽኖች ሰብስብ (አዲሶቹንም ለመያዝ)
+                try {
+                    const t = await apiCall(`/api/admin/transactions?category=REJECTED&timeframe=all&limit=100000&admin_key=${adminKey}`);
+                    const txs = Array.isArray(t.data) ? t.data : (t.data && (t.data.transactions || t.data.rows)) || [];
+                    const g = {};
+                    txs.forEach(x => {
+                        const tg = String(x.telegram_id || '');
+                        if (!tg) return;
+                        if (!g[tg]) g[tg] = { telegram_id: tg, user_id: x.user_id, first_name: x.first_name, amount: 0, count: 0 };
+                        g[tg].amount += parseFloat(x.amount || 0);
+                        g[tg].count += 1;
+                    });
+                    Object.values(g).forEach(add);
+                } catch (e) {}
+                cashbackCandidates = Object.values(map).sort((a, b) => b.amount - a.amount);
+
+                selectedCandidateIds = new Set(cashbackCandidates.map(c => c.id));
+                const sa = document.getElementById('selectAllCheckbox');
+                if (sa) sa.checked = cashbackCandidates.length > 0;
+
+                // ከ Rejected ዝርዝር "ካሽባክ" ተጭኖ ከመጣ ያን ሰው ብቻ ምረጥ
+                if (pendingCashbackFocus) {
+                    const f = pendingCashbackFocus; pendingCashbackFocus = null;
+                    let c = cashbackCandidates.find(x => String(x.telegram_id) === String(f.tgId));
+                    if (!c) {
+                        c = { id: String(f.tgId), user_id: null, telegram_id: String(f.tgId), first_name: f.name || 'ተጫዋች', amount: f.amount || 0, count: 1 };
+                        cashbackCandidates.unshift(c);
+                    }
+                    selectedCandidateIds = new Set([c.id]);
+                    if (sa) sa.checked = false;
+                    const s = document.getElementById('candidateSearchInput');
+                    if (s) s.value = String(f.tgId);
+                } else {
+                    const s = document.getElementById('candidateSearchInput');
+                    if (s && s.value && /^\d{5,}$/.test(s.value)) s.value = '';
+                }
+                renderCashbackCandidates();
+            } catch (e) {
+                container.innerHTML = `<div class="p-3 text-center text-red-400 text-xs">ዳታውን መጫን አልተቻለም: ${e.message}</div>`;
+            } finally {
+                if (icon) icon.classList.remove('fa-spin');
+            }
+        }
+
+        function jumpToCashback(tgId, name, amount) {
+            pendingCashbackFocus = { tgId, name, amount: parseFloat(amount) || 0 };
+            navigateMenu('cashback', true);
         }
 
     </script>
