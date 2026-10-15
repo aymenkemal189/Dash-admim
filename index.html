@@ -1047,17 +1047,88 @@
             input.focus();
         }
 
+        async function loadCashbackCandidates() {
+            const container = document.getElementById('cashbackCandidatesContainer');
+            const icon = document.getElementById('cashbackRefreshIcon');
+            if (icon) icon.classList.add('fa-spin');
+            container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin mr-1.5 text-yellow-400"></i> ተጠቃሚዎችን በመጫን ላይ...</div>`;
 
+            try {
+                let list = [];
+                // 1. Try dedicated cashback-candidates endpoint first
+                const res = await fetch(`${BACKEND_URL}/api/admin/cashback-candidates?timeframe=${currentTimeframe}&admin_key=${adminKey}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    list = Array.isArray(data) ? data : (data.candidates || data.users || []);
+                } else {
+                    // 2. Fallback: aggregate REJECTED transactions if dedicated endpoint is not found
+                    const txRes = await fetch(`${BACKEND_URL}/api/admin/transactions?category=REJECTED&timeframe=${currentTimeframe}&admin_key=${adminKey}`);
+                    if (txRes.ok) {
+                        const rejectedTxs = await txRes.json();
+                        const grouped = {};
+                        (Array.isArray(rejectedTxs) ? rejectedTxs : []).forEach(t => {
+                            const uid = t.telegram_id || t.user_id || t.id;
+                            if (!uid) return;
+                            if (!grouped[uid]) {
+                                grouped[uid] = {
+                                    telegram_id: uid,
+                                    first_name: t.first_name || 'ተጫዋች',
+                                    rejected_amount: 0,
+                                    rejected_count: 0,
+                                    last_rejected_at: t.created_at
+                                };
+                            }
+                            grouped[uid].rejected_amount += parseFloat(t.amount || 0);
+                            grouped[uid].rejected_count += 1;
+                        });
+                        list = Object.values(grouped);
+                    }
+                }
 
+                cashbackCandidates = list.map((c, index) => ({
+                    id: String(c.telegram_id || c.user_id || c.id || index),
+                    telegram_id: c.telegram_id || c.user_id || c.id || '',
+                    first_name: c.first_name || c.name || c.username || 'ተጫዋች',
+                    amount: parseFloat(c.rejected_amount || c.amount || c.total_rejected || 0),
+                    count: c.rejected_count || c.count || 1
+                }));
 
+                // Select all by default on fresh load
+                selectedCandidateIds = new Set(cashbackCandidates.map(c => c.id));
+                const selectAllBox = document.getElementById('selectAllCheckbox');
+                if (selectAllBox) selectAllBox.checked = cashbackCandidates.length > 0;
 
+                renderCashbackCandidates();
+            } catch (e) {
+                console.error("Cashback candidates load error:", e);
+                container.innerHTML = `<div class="p-3 text-center text-red-400 text-xs">ዳታውን መጫን አልተቻለም። እባክዎ ድጋሚ ይሞክሩ!</div>`;
+            } finally {
+                if (icon) icon.classList.remove('fa-spin');
+            }
+        }
 
+        function renderCashbackCandidates() {
+            const container = document.getElementById('cashbackCandidatesContainer');
+            const badge = document.getElementById('candidateCountBadge');
+            const pct = parseFloat(document.getElementById('cashbackPercentageInput')?.value || 50);
+            const search = (document.getElementById('candidateSearchInput')?.value || '').toLowerCase().trim();
 
+            let filtered = cashbackCandidates;
+            if (search) {
+                filtered = cashbackCandidates.filter(c =>
+                    c.first_name.toLowerCase().includes(search) ||
+                    String(c.telegram_id).toLowerCase().includes(search) ||
+                    String(c.amount).includes(search)
+                );
+            }
 
+            if (badge) badge.innerText = filtered.length;
 
-
-        
-        
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="p-4 text-center text-slate-500 text-xs">ምንም Reject የተደረገበት ተጠቃሚ አልተገኘም</div>`;
+                updateCashbackSummary();
+                return;
+            }
 
             container.innerHTML = filtered.map(c => {
                 const isChecked = selectedCandidateIds.has(c.id);
@@ -1144,68 +1215,22 @@
             const summaryEl = document.getElementById('liveCashbackSummary');
             if (summaryEl) {
                 summaryEl.innerText = `ጠቅላላ የሚላክ፡ ${totalCashback.toFixed(2)} ETB (${count} ሰው)`;
-
-
-
-// 1. እጩዎችን ከሰርቨር በትክክለኛው አድራሻ ማምጫ
-        async function loadCashbackCandidates() {
-            const container = document.getElementById('cashbackCandidatesContainer');
-            const icon = document.getElementById('cashbackRefreshIcon');
-            if (icon) icon.classList.add('fa-spin');
-            container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin mr-1.5 text-yellow-400"></i> ተጠቃሚዎችን በመጫን ላይ...</div>`;
-
-            try {
-                // ⚡ ትክክለኛው የሰርቨር API አድራሻ (/api/admin/cashback/candidates)
-                const res = await fetch(`${BACKEND_URL}/api/admin/cashback/candidates`, {
-                    headers: { 'x-admin-key': adminKey }
-                });
-                
-                const data = await res.json();
-                const list = Array.isArray(data) ? data : [];
-
-                cashbackCandidates = list.map(c => ({
-                    id: String(c.user_id),
-                    user_id: parseInt(c.user_id),
-                    telegram_id: c.telegram_id || '',
-                    first_name: c.first_name || c.username || 'ተጫዋች',
-                    amount: parseFloat(c.total_rejected || 0)
-                }));
-
-                // መጀመሪያ ሲከፈት ሁሉንም በራስ-ሰር መምረጥ
-                selectedCandidateIds = new Set(cashbackCandidates.map(c => c.id));
-                const selectAllBox = document.getElementById('selectAllCheckbox');
-                if (selectAllBox) selectAllBox.checked = cashbackCandidates.length > 0;
-
-                renderCashbackCandidates();
-            } catch (e) {
-                console.error("Cashback load error:", e);
-                container.innerHTML = `<div class="p-3 text-center text-red-400 text-xs">ዳታውን መጫን አልተቻለም። እባክዎ እንደገና ይሞክሩ!</div>`;
-            } finally {
-                if (icon) icon.classList.remove('fa-spin');
             }
         }
 
-        // 2. ካሽባክ መላኪያ (ትክክለኛውን /api/admin/cashback/process ይጠራል)
         async function executeBonusCashback() {
             const percentage = parseFloat(document.getElementById('cashbackPercentageInput').value);
             if (!percentage || percentage <= 0 || percentage > 100) {
                 return alert("እባክዎ ከ 1 እስከ 100 ያለ ትክክለኛ ፐርሰንት ያስገቡ!");
             }
 
-            const selectAllBox = document.getElementById('selectAllCheckbox');
-            const isSelectAll = selectAllBox ? selectAllBox.checked : false;
-            
-            // የተመረጡትን user_id መለየት
-            const selectedUserIds = cashbackCandidates
-                .filter(c => selectedCandidateIds.has(c.id))
-                .map(c => c.user_id);
-
-            if (!isSelectAll && selectedUserIds.length === 0) {
-                return alert("እባክዎ ቢያንስ አንድ ተጠቃሚ ይምረጡ ወይም 'ሁሉንም ምረጥ' የሚለውን ያብሩ!");
+            const selectedUsers = cashbackCandidates.filter(c => selectedCandidateIds.has(c.id));
+            if (selectedUsers.length === 0) {
+                return alert("እባክዎ ቢያንስ አንድ ተጠቃሚ ይምረጡ!");
             }
 
-            const countToSend = isSelectAll ? cashbackCandidates.length : selectedUserIds.length;
-            if (!confirm(`እርግጠኛ ነዎት ለ ${countToSend} ተጠቃሚዎች የ ${percentage}% ቦነስ ካሽባክ እንዲላክ ይፈልጋሉ?`)) {
+            const totalBirr = selectedUsers.reduce((sum, u) => sum + (u.amount * percentage / 100), 0);
+            if (!confirm(`እርግጠኛ ነዎት ለ ${selectedUsers.length} ተጠቃሚዎች የ ${percentage}% ካሽባክ (በድምሩ ${totalBirr.toFixed(2)} ETB) መላክ ይፈልጋሉ?`)) {
                 return;
             }
 
@@ -1214,49 +1239,45 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> እየተላከ ነው...';
 
             try {
-                // ⚡ ወደ ትክክለኛው ሰርቨር API በ user_id መላክ
-                const res = await fetch(`${BACKEND_URL}/api/admin/cashback/process`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'x-admin-key': adminKey 
-                    },
-                    body: JSON.stringify({
-                        selectAll: isSelectAll,
-                        userIds: selectedUserIds,
-                        percentage: percentage
-                    })
-                });
+                const payload = {
+                    percentage,
+                    userIds: selectedUsers.map(u => u.telegram_id),
+                    candidates: selectedUsers.map(u => ({
+                        telegram_id: u.telegram_id,
+                        amount: u.amount,
+                        cashback_amount: parseFloat(((u.amount * percentage) / 100).toFixed(2))
+                    }))
+                };
 
+                const res = await fetch(`${BACKEND_URL}/api/admin/execute-cashback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+                    body: JSON.stringify(payload)
+                });
                 const data = await res.json();
-                
-                if (res.ok && data.success) {
-                    alert(data.message || "ካሽባክ በተሳካ ሁኔታ ተልኳል!");
+                alert(data.message || data.error || "ካሽባክ በተሳካ ሁኔታ ተልኳል!");
+                if (res.ok && !data.error) {
                     loadCashbackCandidates();
                     loadAllData();
-                } else {
-                    alert(data.error || "ስህተት ተፈጥሯል፤ ካሽባክ መላክ አልተቻለም።");
                 }
             } catch (e) {
-                console.error("Cashback error:", e);
-                alert("ከሰርቨሩ ጋር መገናኘት አልተቻለም። እባክዎ Render መብራቱን ያረጋግጡ!");
+                alert("ካሽባክ መላክ አልተቻለም! እባክዎ ኔትወርክዎን ያረጋግጡ።");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '🚀 ካሽባክ ላክ';
             }
         }
 
-        // 3. ማኑዋል ብር መሙያ (ትክክለኛውን /api/admin/user/adjust-balance ይጠራል)
         async function submitManualBalanceAdjustment() {
-            const targetId = document.getElementById('adjustTargetId').value.trim();
+            const telegramId = document.getElementById('adjustTargetId').value.trim();
             const walletType = document.getElementById('adjustWalletType').value;
             const amount = parseFloat(document.getElementById('adjustAmount').value);
 
-            if (!targetId) return alert("እባክዎ የተጠቃሚውን Telegram ID ወይም User ID ያስገቡ!");
-            if (!amount || isNaN(amount) || amount <= 0) return alert("እባክዎ ትክክለኛ የብር መጠን ያስገቡ!");
+            if (!telegramId) return alert("እባክዎ የተጠቃሚውን Telegram ID ያስገቡ!");
+            if (!amount || isNaN(amount) || amount === 0) return alert("እባክዎ ትክክለኛ የብር መጠን ያስገቡ!");
 
             const walletLabel = walletType === 'bonus' ? 'Bonus Wallet (የጨዋታ)' : 'Real Wallet (ሊወጣ የሚችል)';
-            if (!confirm(`ለ ID: ${targetId}\nዋሌት: ${walletLabel}\nመጠን: ${amount} ETB\n\nእርግጠኛ ነዎት ሒሳቡ ይጨመር?`)) {
+            if (!confirm(`ለ Telegram ID: ${telegramId}\\nዋሌት: ${walletLabel}\\nመጠን: ${amount} ETB\\n\\nእርግጠኛ ነዎት ሒሳቡ ይጨመር?`)) {
                 return;
             }
 
@@ -1265,41 +1286,159 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> እየተሞላ ነው...';
 
             try {
-                // ⚡ ትክክለኛው ሰርቨር API
-                const res = await fetch(`${BACKEND_URL}/api/admin/user/adjust-balance`, {
+                const res = await fetch(`${BACKEND_URL}/api/admin/adjust-balance`, {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'x-admin-key': adminKey 
-                    },
+                    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
                     body: JSON.stringify({
-                        targetId: targetId,
-                        walletType: walletType,
-                        amount: amount,
-                        note: 'ማኑዋል ካሽባክ / ማስተካከያ'
+                        telegramId,
+                        telegram_id: telegramId,
+                        walletType,
+                        wallet_type: walletType,
+                        amount
                     })
                 });
-
                 const data = await res.json();
-                if (res.ok && data.success) {
-                    alert(data.message || "ሒሳቡ በተሳካ ሁኔታ ተሞልቷል!");
+                alert(data.message || data.error || "ሒሳቡ በተሳካ ሁኔታ ተጨምሯል!");
+                if (res.ok && !data.error) {
                     document.getElementById('adjustAmount').value = '';
                     document.getElementById('selectedUserIndicator').classList.add('hidden');
                     loadAllData();
-                } else {
-                    alert(data.error || "ሒሳቡን መሙላት አልተቻለም!");
                 }
             } catch (e) {
-                alert("ከሰርቨሩ ጋር መገናኘት አልተቻለም!");
+                alert("ሒሳቡን መጨመር አልተቻለም!");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '➕ ሒሳቡን ጨምር (Credit Balance)';
+            }
+        }
+    
+        // ===== FIX: ትክክለኛ endpoints + እውነተኛ ስህተት ማሳያ =====
+        async function apiCall(path, opts = {}) {
+            const res = await fetch(`${BACKEND_URL}${path}`, {
+                ...opts,
+                headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey }
+            });
+            const text = await res.text();
+            let data = null;
+            try { data = JSON.parse(text); } catch (e) {}
+            return { res, data, text };
+        }
+
+        async function loadCashbackCandidates() {
+            const container = document.getElementById('cashbackCandidatesContainer');
+            const icon = document.getElementById('cashbackRefreshIcon');
+            if (icon) icon.classList.add('fa-spin');
+            container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">ተጠቃሚዎችን በመጫን ላይ...</div>`;
+            try {
+                let r = await apiCall('/api/admin/cashback/candidates');
+                let list = (r.res.ok && Array.isArray(r.data)) ? r.data : null;
+                if (!list) {
+                    r = await apiCall(`/api/admin/cashback-candidates?timeframe=${currentTimeframe}&admin_key=${adminKey}`);
+                    const d = r.data;
+                    list = r.res.ok && d ? (Array.isArray(d) ? d : (d.candidates || d.users || [])) : [];
+                }
+                cashbackCandidates = list.map((c, i) => ({
+                    id: String(c.user_id || c.telegram_id || c.id || i),
+                    user_id: c.user_id || null,
+                    telegram_id: c.telegram_id || c.user_id || '',
+                    first_name: c.first_name || c.name || c.username || 'ተጫዋች',
+                    amount: parseFloat(c.total_rejected || c.rejected_amount || c.amount || 0),
+                    count: c.rejected_count || c.count || 1
+                }));
+                selectedCandidateIds = new Set(cashbackCandidates.map(c => c.id));
+                const sa = document.getElementById('selectAllCheckbox');
+                if (sa) sa.checked = cashbackCandidates.length > 0;
+                renderCashbackCandidates();
+            } catch (e) {
+                container.innerHTML = `<div class="p-3 text-center text-red-400 text-xs">ዳታውን መጫን አልተቻለም: ${e.message}</div>`;
+            } finally {
+                if (icon) icon.classList.remove('fa-spin');
+            }
+        }
+
+        async function executeBonusCashback() {
+            const percentage = parseFloat(document.getElementById('cashbackPercentageInput').value);
+            if (!percentage || percentage <= 0 || percentage > 100) return alert("ከ 1 እስከ 100 ፐርሰንት ያስገቡ!");
+            const selected = cashbackCandidates.filter(c => selectedCandidateIds.has(c.id));
+            if (selected.length === 0) return alert("ቢያንስ አንድ ተጠቃሚ ይምረጡ!");
+            const total = selected.reduce((s, u) => s + (u.amount * percentage / 100), 0);
+            if (!confirm(`ለ ${selected.length} ተጠቃሚዎች የ ${percentage}% ካሽባክ (ድምር ${total.toFixed(2)} ETB) ይላክ?`)) return;
+
+            const btn = document.getElementById('btnSendCashback');
+            btn.disabled = true;
+            btn.innerHTML = 'እየተላከ ነው...';
+            try {
+                const allSel = document.getElementById('selectAllCheckbox')?.checked && selected.length === cashbackCandidates.length;
+                // 1) አዲሱ endpoint
+                let r = await apiCall('/api/admin/cashback/process', {
+                    method: 'POST',
+                    body: JSON.stringify({ selectAll: !!allSel, userIds: selected.map(u => u.user_id || u.telegram_id), percentage })
+                });
+                // 2) 404 ወይም JSON ካልሆነ ወደ አሮጌው endpoint
+                if (r.res.status === 404 || !r.data) {
+                    r = await apiCall('/api/admin/execute-cashback', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            percentage,
+                            selectAll: !!allSel,
+                            userIds: selected.map(u => u.user_id || u.telegram_id),
+                            candidates: selected.map(u => ({
+                                telegram_id: u.telegram_id, user_id: u.user_id, amount: u.amount,
+                                cashback_amount: parseFloat((u.amount * percentage / 100).toFixed(2))
+                            }))
+                        })
+                    });
+                }
+                if (!r.data) {
+                    alert(`ሰርቨሩ ትክክለኛ ምላሽ አልሰጠም (HTTP ${r.res.status}):\n` + r.text.slice(0, 150));
+                } else {
+                    alert(r.data.message || r.data.error || (r.res.ok ? "ተልኳል!" : `ስህተት HTTP ${r.res.status}`));
+                    if (r.res.ok && !r.data.error) { loadCashbackCandidates(); loadAllData(); }
+                }
+            } catch (e) {
+                alert("ከሰርቨሩ ጋር መገናኘት አልተቻለም (Render ተኝቶ ሊሆን ይችላል፤ ጥቂት ጠብቀህ ድጋሚ ሞክር):\n" + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🚀 ካሽባክ ላክ';
+            }
+        }
+
+        async function submitManualBalanceAdjustment() {
+            const targetId = document.getElementById('adjustTargetId').value.trim();
+            const walletType = document.getElementById('adjustWalletType').value;
+            const amount = parseFloat(document.getElementById('adjustAmount').value);
+            if (!targetId) return alert("Telegram ID ያስገቡ!");
+            if (!amount || isNaN(amount) || amount === 0) return alert("ትክክለኛ የብር መጠን ያስገቡ!");
+            if (!confirm(`ለ ID: ${targetId}\nዋሌት: ${walletType}\nመጠን: ${amount} ETB\n\nይጨመር?`)) return;
+
+            const btn = document.getElementById('btnAdjustBal');
+            btn.disabled = true;
+            btn.innerHTML = 'እየተሞላ ነው...';
+            const body = JSON.stringify({
+                targetId, telegramId: targetId, telegram_id: targetId,
+                walletType, wallet_type: walletType, amount, note: 'ማኑዋል ካሽባክ / ማስተካከያ'
+            });
+            try {
+                let r = await apiCall('/api/admin/user/adjust-balance', { method: 'POST', body });
+                if (r.res.status === 404 || !r.data) r = await apiCall('/api/admin/adjust-balance', { method: 'POST', body });
+                if (!r.data) {
+                    alert(`ሰርቨሩ ትክክለኛ ምላሽ አልሰጠም (HTTP ${r.res.status}):\n` + r.text.slice(0, 150));
+                } else {
+                    alert(r.data.message || r.data.error || (r.res.ok ? "ተሞልቷል!" : `ስህተት HTTP ${r.res.status}`));
+                    if (r.res.ok && !r.data.error) {
+                        document.getElementById('adjustAmount').value = '';
+                        document.getElementById('selectedUserIndicator').classList.add('hidden');
+                        loadAllData();
+                    }
+                }
+            } catch (e) {
+                alert("ከሰርቨሩ ጋር መገናኘት አልተቻለም:\n" + e.message);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '➕ ሒሳቡን ጨምር (Credit Balance)';
             }
         }
 
-
-
-        
     </script>
 </body>
 </html>
