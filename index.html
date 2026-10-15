@@ -9,10 +9,16 @@
     <style>
         body { background-color: #060911; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
         .gradient-blue { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #38bdf8 100%); }
+        .gradient-gold { background: linear-gradient(135deg, #92400e 0%, #d97706 50%, #fbbf24 100%); }
         .glass-box { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.25); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         #sideDrawer { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(234, 179, 8, 0.4); }
+            50% { border-color: rgba(234, 179, 8, 0.9); }
+        }
+        .animate-gold-border { animation: pulse-border 2.5s infinite; }
     </style>
 </head>
 <body class="pb-16 select-none">
@@ -36,7 +42,7 @@
 
     <!-- 3-BAR SIDE DRAWER MENU (☰) -->
     <div id="drawerOverlay" onclick="toggleDrawer()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
-    <div id="sideDrawer" class="fixed top-0 bottom-0 left-0 w-72 bg-slate-900/95 backdrop-blur-2xl border-r border-slate-800 z-50 transform -translate-x-full p-4 flex flex-col justify-between shadow-2xl">
+    <div id="sideDrawer" class="fixed top-0 bottom-0 left-0 w-72 bg-slate-900/95 backdrop-blur-2xl border-r border-slate-800 z-50 transform -translate-x-full p-4 flex flex-col justify-between shadow-2xl overflow-y-auto no-scrollbar">
         <div class="space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-800">
                 <div class="flex items-center gap-2">
@@ -73,6 +79,12 @@
                     </div>
                     <span id="drawerWithBadge" class="px-2 py-0.5 rounded-full text-[9px] font-black bg-orange-500/20 text-orange-300">0</span>
                 </button>
+                <button onclick="navigateMenu('cashback')" class="drawer-btn w-full flex items-center justify-between p-3 rounded-2xl text-yellow-300 bg-yellow-500/10 border border-yellow-500/30 hover:bg-yellow-500/20 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-hand-holding-dollar w-5 text-center text-yellow-400"></i> 🎁 ካሽባክ & ብር መሙያ (Hub)
+                    </div>
+                    <span class="px-1.5 py-0.5 rounded-md text-[8px] font-black bg-yellow-400 text-black">NEW</span>
+                </button>
                 <button onclick="navigateMenu('audit')" class="drawer-btn w-full flex items-center gap-3 p-3 rounded-2xl text-slate-300 hover:bg-slate-800 transition">
                     <i class="fa-solid fa-scale-balanced w-5 text-center text-amber-400"></i> የ 50/50 ሽርክና ኦዲት
                 </button>
@@ -91,7 +103,7 @@
             </nav>
         </div>
 
-        <div class="pt-3 border-t border-slate-800 space-y-2">
+        <div class="pt-3 border-t border-slate-800 space-y-2 mt-4">
             <button onclick="loadAllData()" class="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold active:scale-95 transition">
                 <i class="fa-solid fa-arrows-rotate"></i> ዳታ አድስ (Refresh)
             </button>
@@ -119,7 +131,10 @@
             </div>
 
             <div class="flex items-center gap-1.5">
-                <span id="headerPendingBadge" class="px-2 py-1 bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 rounded-xl text-[10px] font-black hidden">
+                <button onclick="navigateMenu('cashback', true)" title="ካሽባክ እና ብር መሙያ" class="w-8 h-8 rounded-xl bg-yellow-500/15 border border-yellow-500/40 text-yellow-400 flex items-center justify-center text-xs active:scale-95 transition">
+                    <i class="fa-solid fa-gift"></i>
+                </button>
+                <span id="headerPendingBadge" onclick="navigateMenu('txs-pending', true)" class="cursor-pointer px-2 py-1 bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 rounded-xl text-[10px] font-black hidden">
                     0 ጥያቄ
                 </span>
                 <button onclick="loadAllData()" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-blue-400 flex items-center justify-center text-xs active:scale-95 transition">
@@ -212,11 +227,17 @@
                 <span id="statOverviewBonus" class="font-black text-purple-300 text-sm">0.00 ETB</span>
             </div>
 
-            <!-- QUICK 50/50 SETTLEMENT SHORTCUT BUTTON -->
-            <button onclick="navigateMenu('audit')" class="w-full gradient-blue p-3.5 rounded-2xl font-black text-xs text-white shadow-lg flex items-center justify-between active:scale-95 transition">
-                <span><i class="fa-solid fa-scale-balanced mr-1.5"></i> የ 50/50 ሽርክና ሂሳብ ይመልከቱ</span>
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-            </button>
+            <!-- QUICK SHORTCUT BUTTONS -->
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="navigateMenu('audit', true)" class="gradient-blue p-3 rounded-2xl font-black text-[11px] text-white shadow-lg flex items-center justify-between active:scale-95 transition">
+                    <span><i class="fa-solid fa-scale-balanced mr-1"></i> 50/50 ሽርክና</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+                <button onclick="navigateMenu('cashback', true)" class="gradient-gold p-3 rounded-2xl font-black text-[11px] text-white shadow-lg flex items-center justify-between active:scale-95 transition">
+                    <span><i class="fa-solid fa-gift mr-1"></i> ካሽባክ & ብር ሙላ</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+            </div>
         </section>
 
         <!-- ================= PAGE 2: 50/50 PARTNERSHIP SETTLEMENT ================= -->
@@ -428,6 +449,119 @@
                 </div>
                 <button onclick="createPromo()" class="w-full gradient-blue text-white font-black py-2.5 rounded-xl text-xs shadow-md active:scale-95 transition">ኮድ ፍጠር</button>
             </div>
+
+            <!-- Shortcut link to Cashback Hub -->
+            <button onclick="navigateMenu('cashback', true)" class="w-full p-3 rounded-2xl bg-slate-900 border border-yellow-500/40 text-yellow-300 font-bold text-xs flex items-center justify-between active:scale-95 transition">
+                <span><i class="fa-solid fa-hand-holding-dollar mr-1.5"></i> ወደ ካሽባክ እና ማኑዋል ብር መሙያ ሂድ</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <!-- ================= PAGE 8: 🎁 BONUS CASHBACK & MANUAL BALANCE TOP-UP HUB ================= -->
+        <section id="view-cashback" class="hidden space-y-3">
+            <!-- 🎁 BONUS CASHBACK & MANUAL BALANCE TOP-UP HUB -->
+            <div class="glass-box p-4 rounded-3xl border border-yellow-500/40 space-y-3.5 shadow-2xl animate-gold-border">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                    <div>
+                        <h3 class="text-xs font-black text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-gift text-yellow-400"></i> የቦነስ ካሽባክ መካሻ (Bonus Cashback)
+                        </h3>
+                        <p class="text-[9px] text-slate-400 mt-0.5">ባለፈው Reject የተደረገባቸውን መርጠህ ወይም ለሁሉም ካሽባክ ስጥ</p>
+                    </div>
+                    <button onclick="loadCashbackCandidates()" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-xs text-blue-400 hover:text-white flex items-center justify-center active:scale-95 transition" title="ዳታ አድስ">
+                        <i id="cashbackRefreshIcon" class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                </div>
+
+                <!-- ⚡ Quick Percentage Shortcuts -->
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center text-[9px] text-slate-400 font-bold">
+                        <span>ፈጣን ፐርሰንት መምረጫ (Shortcuts)፦</span>
+                        <span id="liveCashbackSummary" class="text-emerald-400 font-black">ጠቅላላ የሚላክ፡ 0.00 ETB (0 ሰው)</span>
+                    </div>
+                    <div class="grid grid-cols-5 gap-1.5 text-[10px] font-black">
+                        <button type="button" onclick="setCashbackPercent(10)" class="pct-chip py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:border-yellow-400 transition">10%</button>
+                        <button type="button" onclick="setCashbackPercent(25)" class="pct-chip py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:border-yellow-400 transition">25%</button>
+                        <button type="button" onclick="setCashbackPercent(50)" class="pct-chip py-1.5 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 transition">50%</button>
+                        <button type="button" onclick="setCashbackPercent(75)" class="pct-chip py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:border-yellow-400 transition">75%</button>
+                        <button type="button" onclick="setCashbackPercent(100)" class="pct-chip py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:border-yellow-400 transition">100%</button>
+                    </div>
+                </div>
+
+                <!-- Percentage & Action -->
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <label class="text-[10px] text-slate-400 font-bold">የካሽባክ ፐርሰንት (%)፦</label>
+                        <input id="cashbackPercentageInput" oninput="updateCashbackSummary()" type="number" value="50" min="1" max="100" class="w-full text-xs font-black p-2 rounded-xl bg-slate-950 border border-slate-800 text-yellow-400 outline-none focus:border-yellow-400 mt-1">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="executeBonusCashback()" id="btnSendCashback" class="w-full gradient-blue text-white font-black py-2 rounded-xl text-xs shadow-md active:scale-95 transition">
+                            🚀 ካሽባክ ላክ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Filter Inside Candidates -->
+                <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass text-slate-500 text-[10px] ml-1"></i>
+                    <input id="candidateSearchInput" oninput="renderCashbackCandidates()" type="text" placeholder="ተጠቃሚ ፈልግ (በስም፣ በ Telegram ID ወይም በብር መጠን)..." class="w-full text-[11px] bg-transparent text-white outline-none">
+                </div>
+
+                <!-- Select All & Count -->
+                <div class="flex justify-between items-center text-xs pt-1 px-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllCandidates()" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-0">
+                        <span class="text-[11px] font-bold text-white">ሁሉንም ምረጥ (Select All)</span>
+                    </label>
+                    <span class="text-[10px] text-slate-400">ተጠቃሚዎች፡ <b id="candidateCountBadge" class="text-yellow-400">0</b></span>
+                </div>
+
+                <!-- Candidate List -->
+                <div id="cashbackCandidatesContainer" class="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+                    <div class="p-3 text-center text-slate-500 text-xs">ተጠቃሚዎችን ለመጫን ዳታ አድስን ይጫኑ...</div>
+                </div>
+
+                <!-- 🎯 MANUAL TOP-UP BY TELEGRAM ID -->
+                <div class="pt-3 border-t border-slate-800 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-black text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-pen text-blue-400"></i> በ Telegram ID ፈልገህ ብር ሙላ (Manual Top-up)
+                        </span>
+                        <span id="selectedUserIndicator" class="text-[9px] text-emerald-400 font-bold hidden"></span>
+                    </div>
+
+                    <div class="relative">
+                        <input id="adjustTargetId" type="number" placeholder="የተጠቃሚው Telegram ID (ለምሳሌ 123456789)" class="w-full text-xs font-mono p-2.5 pr-16 rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:border-blue-500">
+                        <button type="button" onclick="pasteTelegramId()" class="absolute right-1.5 top-1.5 px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[9px] text-blue-300 font-bold active:scale-95 transition">
+                            <i class="fa-regular fa-paste"></i> Paste
+                        </button>
+                    </div>
+
+                    <!-- ⚡ Quick Amount Chips -->
+                    <div class="space-y-1">
+                        <span class="text-[9px] text-slate-400 font-bold">ፈጣን የብር መጠን መምረጫ፦</span>
+                        <div class="grid grid-cols-6 gap-1 text-[10px] font-black">
+                            <button type="button" onclick="setQuickTopupAmount(10)" class="py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:border-blue-400 active:scale-95 transition">+10</button>
+                            <button type="button" onclick="setQuickTopupAmount(20)" class="py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:border-blue-400 active:scale-95 transition">+20</button>
+                            <button type="button" onclick="setQuickTopupAmount(50)" class="py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:border-blue-400 active:scale-95 transition">+50</button>
+                            <button type="button" onclick="setQuickTopupAmount(100)" class="py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:border-blue-400 active:scale-95 transition">+100</button>
+                            <button type="button" onclick="setQuickTopupAmount(200)" class="py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:border-blue-400 active:scale-95 transition">+200</button>
+                            <button type="button" onclick="setQuickTopupAmount(500)" class="py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:border-blue-400 active:scale-95 transition">+500</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <select id="adjustWalletType" class="p-2 rounded-xl bg-slate-950 border border-slate-800 text-white font-bold outline-none focus:border-blue-500">
+                            <option value="bonus">Bonus Wallet (የጨዋታ)</option>
+                            <option value="real">Real Wallet (ሊወጣ የሚችል)</option>
+                        </select>
+                        <input id="adjustAmount" type="number" placeholder="የብር መጠን" class="p-2 rounded-xl bg-slate-950 border border-slate-800 text-white font-black outline-none focus:border-blue-500">
+                    </div>
+                    <button onclick="submitManualBalanceAdjustment()" id="btnAdjustBal" class="w-full bg-slate-800 hover:bg-slate-700 border border-blue-500/30 text-white font-black py-2.5 rounded-xl text-xs active:scale-95 transition shadow-md">
+                        ➕ ሒሳቡን ጨምር (Credit Balance)
+                    </button>
+                </div>
+            </div>
         </section>
     </div>
 
@@ -437,6 +571,8 @@
 
         let adminKey = localStorage.getItem('dash_admin_key') || '';
         let allTransactions = [];
+        let cashbackCandidates = [];
+        let selectedCandidateIds = new Set();
         let currentCategory = 'PENDING';
         let currentTimeframe = 'all'; 
         let currentAgentOnline = true;
@@ -453,9 +589,9 @@
         };
 
         const templates = {
-            withdrawal: `⚠️ <b>ጠቃሚ ማሳሰቢያ ለክቡራን የ Dash Bingo ተጫዋቾች!</b>\n\nበአሁኑ ሰዓት ገንዘብ ማውጫ (Withdrawal) ሲስተማችንን ይበልጥ ፈጣንና አስተማማኝ ለማድረግ የሲስተም ማሻሻያ (System Maintenance) እያደረግን እንገኛለን።\n\nበጥቂት ሰዓታት ውስጥ ማሻሻያውን አጠናቀን የምንመለስ ሲሆን፣ የጠየቃችኋቸው ክፍያዎች በሙሉ እንደተጠበቁ ናቸው።\n\nበትዕግስት ስለጠበቃችሁን እናመሰግናለን! 🙏⚡\n@DashBingo`,
-            bonus: `🎁 <b>ልዩ የስጦታ ማስታወቂያ ከ Dash Bingo!</b>\n\nዛሬ ለተጫዋቾቻችን አዲስ የፕሮሞ ኮድ ተለቋል! አሁኑኑ ገብተው ኮዱን በመጠቀም ነፃ የጨዋታ ቦነስዎን ይውሰዱ።\n\n👉 <a href="https://t.me/dashbingobot/eth">አሁኑኑ ይጫወቱ</a>`,
-            round: `⚡ <b>ትኩስ ዙር ተጀምሯል!</b>\n\nከፍተኛ ድራሽ (Pot) ተይዟል፤ አሁኑኑ ገብተው ካርዶችን በመቁረጥ የዕድሉ ባለቤት ይሁኑ! 🚀\n\n👉 <a href="https://t.me/dashbingobot/eth">ለመቁረጥ እዚህ ይጫኑ</a>`
+            withdrawal: `⚠️ <b>ጠቃሚ ማሳሰቢያ ለክቡራን የ Dash Bingo ተጫዋቾች!</b>\\n\\nበአሁኑ ሰዓት ገንዘብ ማውጫ (Withdrawal) ሲስተማችንን ይበልጥ ፈጣንና አስተማማኝ ለማድረግ የሲስተም ማሻሻያ (System Maintenance) እያደረግን እንገኛለን።\\n\\nበጥቂት ሰዓታት ውስጥ ማሻሻያውን አጠናቀን የምንመለስ ሲሆን፣ የጠየቃችኋቸው ክፍያዎች በሙሉ እንደተጠበቁ ናቸው።\\n\\nበትዕግስት ስለጠበቃችሁን እናመሰግናለን! 🙏⚡\\n@DashBingo`,
+            bonus: `🎁 <b>ልዩ የስጦታ ማስታወቂያ ከ Dash Bingo!</b>\\n\\nዛሬ ለተጫዋቾቻችን አዲስ የፕሮሞ ኮድ ተለቋል! አሁኑኑ ገብተው ኮዱን በመጠቀም ነፃ የጨዋታ ቦነስዎን ይውሰዱ።\\n\\n👉 <a href="https://t.me/dashbingobot/eth">አሁኑኑ ይጫወቱ</a>`,
+            round: `⚡ <b>ትኩስ ዙር ተጀምሯል!</b>\\n\\nከፍተኛ ድራሽ (Pot) ተይዟል፤ አሁኑኑ ገብተው ካርዶችን በመቁረጥ የዕድሉ ባለቤት ይሁኑ! 🚀\\n\\n👉 <a href="https://t.me/dashbingobot/eth">ለመቁረጥ እዚህ ይጫኑ</a>`
         };
 
         if (adminKey) checkKey(adminKey);
@@ -501,8 +637,8 @@
             }
         }
 
-        function navigateMenu(menuId) {
-            ['overview', 'audit', 'agents', 'broadcast', 'txs', 'bonus', 'promo'].forEach(m => {
+        function navigateMenu(menuId, skipDrawerToggle = false) {
+            ['overview', 'audit', 'agents', 'broadcast', 'txs', 'bonus', 'promo', 'cashback'].forEach(m => {
                 const el = document.getElementById(`view-${m}`);
                 if (el) el.classList.add('hidden');
             });
@@ -514,6 +650,9 @@
             } else {
                 const target = document.getElementById(`view-${menuId}`);
                 if (target) target.classList.remove('hidden');
+                if (menuId === 'cashback') {
+                    loadCashbackCandidates();
+                }
             }
 
             const titles = {
@@ -525,10 +664,16 @@
                 'txs-deposit': '📥 ገቢዎች ብቻ (Deposits)',
                 'txs-withdraw': '📤 ወጪዎች ብቻ (Withdrawals)',
                 'bonus': 'የቦነስ ሪፖርት (ለብቻው) 🎁',
-                'promo': 'ፕሮሞ ኮድ & ቦነስ ስራ 🏷️'
+                'promo': 'ፕሮሞ ኮድ & ቦነስ ስራ 🏷️',
+                'cashback': '🎁 ካሽባክ & ማኑዋል ብር መሙያ'
             };
             document.getElementById('pageTitle').innerHTML = titles[menuId] || 'ዳሽቦርድ';
-            toggleDrawer();
+            if (!skipDrawerToggle) {
+                const drawer = document.getElementById('sideDrawer');
+                if (!drawer.classList.contains('-translate-x-full')) {
+                    toggleDrawer();
+                }
+            }
         }
 
         // ⏱️ TIMEFRAME SELECTOR (30m, 1h, 12h, 24h, 7d, 15d, 30d, all)
@@ -733,7 +878,8 @@
                     (t.account_number || '').toLowerCase().includes(searchKeyword) ||
                     (t.trx_ref || '').toLowerCase().includes(searchKeyword) ||
                     (t.amount || '').toString().includes(searchKeyword) ||
-                    (t.sms_text || '').toLowerCase().includes(searchKeyword)
+                    (t.sms_text || '').toLowerCase().includes(searchKeyword) ||
+                    (t.telegram_id || t.user_id || '').toString().includes(searchKeyword)
                 );
             }
 
@@ -744,7 +890,9 @@
                 return;
             }
 
-            container.innerHTML = filtered.map((t, idx) => `
+            container.innerHTML = filtered.map((t, idx) => {
+                const tgId = t.telegram_id || t.user_id || '';
+                return `
                 <div class="glass-box p-3 rounded-2xl space-y-2 border border-slate-800 shadow-md">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
@@ -757,6 +905,15 @@
                             ${t.type === 'DEPOSIT' ? '+' : '-'}${parseFloat(t.amount).toFixed(2)} ETB
                         </span>
                     </div>
+
+                    ${tgId ? `
+                        <div class="flex justify-between items-center text-[10px] bg-slate-950/70 px-2.5 py-1.5 rounded-xl border border-slate-800/80">
+                            <span class="text-slate-400">Telegram ID: <b class="font-mono text-slate-200">${tgId}</b></span>
+                            <button onclick="quickJumpToTopup('${tgId}', '${(t.first_name || '').replace(/'/g, "")}')" class="text-[9px] font-black text-yellow-400 hover:text-yellow-300 flex items-center gap-1">
+                                <i class="fa-solid fa-bolt"></i> ብር ሙላ / ካሽባክ
+                            </button>
+                        </div>
+                    ` : ''}
 
                     ${t.trx_ref ? `
                         <div class="p-1.5 bg-slate-950 rounded-xl border border-slate-800 text-[10px] flex justify-between items-center">
@@ -774,7 +931,7 @@
                         <div class="space-y-1">
                             <div class="flex justify-between items-center text-[9px] text-slate-400">
                                 <span>የደረሰው ሙሉ SMS:</span>
-                                <button onclick="navigator.clipboard.writeText(\`${t.sms_text.replace(/`/g, "\\`")}\`); alert('SMS ኮፒ ተደርጓል!');" class="text-blue-400 hover:text-blue-300 font-bold">
+                                <button onclick="navigator.clipboard.writeText(\`${t.sms_text.replace(/`/g, "\\\\`")}\`); alert('SMS ኮፒ ተደርጓል!');" class="text-blue-400 hover:text-blue-300 font-bold">
                                     <i class="fa-regular fa-copy"></i> ኮፒ
                                 </button>
                             </div>
@@ -795,7 +952,7 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         async function resolveTx(id, action) {
@@ -838,10 +995,320 @@
             });
             const data = await res.json();
             if (data.success) {
-                alert(`ተከፍሏል!\n` + data.distributed.map(d => `${d.name}: +${d.bonus} ETB`).join('\n'));
+                alert(`ተከፍሏል!\\n` + data.distributed.map(d => `${d.name}: +${d.bonus} ETB`).join('\\n'));
                 loadAllData();
             } else {
                 alert(data.error);
+            }
+        }
+
+        // =========================================================================
+        // 🎁 BONUS CASHBACK & MANUAL TOP-UP HUB FUNCTIONS + SHORTCUTS
+        // =========================================================================
+
+        function setCashbackPercent(pct) {
+            document.getElementById('cashbackPercentageInput').value = pct;
+            document.querySelectorAll('.pct-chip').forEach(btn => {
+                if (btn.innerText === `${pct}%`) {
+                    btn.className = "pct-chip py-1.5 rounded-xl bg-yellow-500/20 border border-yellow-400 text-yellow-300 transition";
+                } else {
+                    btn.className = "pct-chip py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:border-yellow-400 transition";
+                }
+            });
+            renderCashbackCandidates();
+            updateCashbackSummary();
+        }
+
+        function setQuickTopupAmount(amt) {
+            document.getElementById('adjustAmount').value = amt;
+        }
+
+        async function pasteTelegramId() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    document.getElementById('adjustTargetId').value = text.replace(/\\D/g, '');
+                }
+            } catch (e) {
+                alert("ከ Clipboard ላይ ማንበብ አልተቻለም፣ እባክዎ በእጅ ያስገቡ።");
+            }
+        }
+
+        function quickJumpToTopup(tgId, name = '') {
+            navigateMenu('cashback', true);
+            const input = document.getElementById('adjustTargetId');
+            input.value = tgId;
+            const indicator = document.getElementById('selectedUserIndicator');
+            if (name) {
+                indicator.innerText = `👤 ${name}`;
+                indicator.classList.remove('hidden');
+            }
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            input.focus();
+        }
+
+        async function loadCashbackCandidates() {
+            const container = document.getElementById('cashbackCandidatesContainer');
+            const icon = document.getElementById('cashbackRefreshIcon');
+            if (icon) icon.classList.add('fa-spin');
+            container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin mr-1.5 text-yellow-400"></i> ተጠቃሚዎችን በመጫን ላይ...</div>`;
+
+            try {
+                let list = [];
+                // 1. Try dedicated cashback-candidates endpoint first
+                const res = await fetch(`${BACKEND_URL}/api/admin/cashback-candidates?timeframe=${currentTimeframe}&admin_key=${adminKey}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    list = Array.isArray(data) ? data : (data.candidates || data.users || []);
+                } else {
+                    // 2. Fallback: aggregate REJECTED transactions if dedicated endpoint is not found
+                    const txRes = await fetch(`${BACKEND_URL}/api/admin/transactions?category=REJECTED&timeframe=${currentTimeframe}&admin_key=${adminKey}`);
+                    if (txRes.ok) {
+                        const rejectedTxs = await txRes.json();
+                        const grouped = {};
+                        (Array.isArray(rejectedTxs) ? rejectedTxs : []).forEach(t => {
+                            const uid = t.telegram_id || t.user_id || t.id;
+                            if (!uid) return;
+                            if (!grouped[uid]) {
+                                grouped[uid] = {
+                                    telegram_id: uid,
+                                    first_name: t.first_name || 'ተጫዋች',
+                                    rejected_amount: 0,
+                                    rejected_count: 0,
+                                    last_rejected_at: t.created_at
+                                };
+                            }
+                            grouped[uid].rejected_amount += parseFloat(t.amount || 0);
+                            grouped[uid].rejected_count += 1;
+                        });
+                        list = Object.values(grouped);
+                    }
+                }
+
+                cashbackCandidates = list.map((c, index) => ({
+                    id: String(c.telegram_id || c.user_id || c.id || index),
+                    telegram_id: c.telegram_id || c.user_id || c.id || '',
+                    first_name: c.first_name || c.name || c.username || 'ተጫዋች',
+                    amount: parseFloat(c.rejected_amount || c.amount || c.total_rejected || 0),
+                    count: c.rejected_count || c.count || 1
+                }));
+
+                // Select all by default on fresh load
+                selectedCandidateIds = new Set(cashbackCandidates.map(c => c.id));
+                const selectAllBox = document.getElementById('selectAllCheckbox');
+                if (selectAllBox) selectAllBox.checked = cashbackCandidates.length > 0;
+
+                renderCashbackCandidates();
+            } catch (e) {
+                console.error("Cashback candidates load error:", e);
+                container.innerHTML = `<div class="p-3 text-center text-red-400 text-xs">ዳታውን መጫን አልተቻለም። እባክዎ ድጋሚ ይሞክሩ!</div>`;
+            } finally {
+                if (icon) icon.classList.remove('fa-spin');
+            }
+        }
+
+        function renderCashbackCandidates() {
+            const container = document.getElementById('cashbackCandidatesContainer');
+            const badge = document.getElementById('candidateCountBadge');
+            const pct = parseFloat(document.getElementById('cashbackPercentageInput')?.value || 50);
+            const search = (document.getElementById('candidateSearchInput')?.value || '').toLowerCase().trim();
+
+            let filtered = cashbackCandidates;
+            if (search) {
+                filtered = cashbackCandidates.filter(c =>
+                    c.first_name.toLowerCase().includes(search) ||
+                    String(c.telegram_id).toLowerCase().includes(search) ||
+                    String(c.amount).includes(search)
+                );
+            }
+
+            if (badge) badge.innerText = filtered.length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="p-4 text-center text-slate-500 text-xs">ምንም Reject የተደረገበት ተጠቃሚ አልተገኘም</div>`;
+                updateCashbackSummary();
+                return;
+            }
+
+            container.innerHTML = filtered.map(c => {
+                const isChecked = selectedCandidateIds.has(c.id);
+                const bonusPreview = ((c.amount * pct) / 100).toFixed(2);
+                return `
+                    <div class="p-2.5 rounded-2xl bg-slate-950/90 border ${isChecked ? 'border-yellow-500/40' : 'border-slate-800'} flex items-center justify-between gap-2 transition">
+                        <label class="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0">
+                            <input type="checkbox" 
+                                   class="candidate-checkbox w-4 h-4 rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-0" 
+                                   value="${c.id}" 
+                                   ${isChecked ? 'checked' : ''} 
+                                   onchange="toggleSingleCandidate('${c.id}', this.checked)">
+                            <div class="truncate">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs font-black text-white truncate">${c.first_name}</span>
+                                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-red-500/15 text-red-300 font-bold">${c.count}x Reject</span>
+                                </div>
+                                <div class="text-[9px] text-slate-400 font-mono flex items-center gap-2">
+                                    <span>ID: ${c.telegram_id}</span>
+                                    <span>•</span>
+                                    <span>Reject: <b class="text-slate-200">${c.amount.toFixed(2)} ETB</b></span>
+                                </div>
+                            </div>
+                        </label>
+                        <div class="text-right flex items-center gap-2 shrink-0">
+                            <div>
+                                <span class="text-[8px] text-slate-400 block">ካሽባክ (${pct}%)</span>
+                                <span class="text-xs font-black text-yellow-400">+${bonusPreview} ETB</span>
+                            </div>
+                            <button type="button" onclick="fillManualTopupFromCandidate('${c.telegram_id}', '${c.first_name.replace(/'/g, "")}', ${bonusPreview})" title="ወደ Manual Top-up ቅዳ" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-blue-400 flex items-center justify-center text-[10px] active:scale-95 transition">
+                                <i class="fa-solid fa-user-pen"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateCashbackSummary();
+        }
+
+        function fillManualTopupFromCandidate(tgId, name, suggestedAmount) {
+            document.getElementById('adjustTargetId').value = tgId;
+            document.getElementById('adjustAmount').value = suggestedAmount;
+            const indicator = document.getElementById('selectedUserIndicator');
+            indicator.innerText = `👤 ${name}`;
+            indicator.classList.remove('hidden');
+            document.getElementById('adjustTargetId').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function toggleSingleCandidate(id, checked) {
+            if (checked) {
+                selectedCandidateIds.add(String(id));
+            } else {
+                selectedCandidateIds.delete(String(id));
+            }
+            const selectAllBox = document.getElementById('selectAllCheckbox');
+            if (selectAllBox) {
+                selectAllBox.checked = cashbackCandidates.length > 0 && selectedCandidateIds.size === cashbackCandidates.length;
+            }
+            renderCashbackCandidates();
+        }
+
+        function toggleSelectAllCandidates() {
+            const selectAllBox = document.getElementById('selectAllCheckbox');
+            const isChecked = selectAllBox ? selectAllBox.checked : false;
+            if (isChecked) {
+                cashbackCandidates.forEach(c => selectedCandidateIds.add(c.id));
+            } else {
+                selectedCandidateIds.clear();
+            }
+            renderCashbackCandidates();
+        }
+
+        function updateCashbackSummary() {
+            const pct = parseFloat(document.getElementById('cashbackPercentageInput')?.value || 0);
+            let totalCashback = 0;
+            let count = 0;
+            cashbackCandidates.forEach(c => {
+                if (selectedCandidateIds.has(c.id)) {
+                    totalCashback += (c.amount * pct) / 100;
+                    count++;
+                }
+            });
+            const summaryEl = document.getElementById('liveCashbackSummary');
+            if (summaryEl) {
+                summaryEl.innerText = `ጠቅላላ የሚላክ፡ ${totalCashback.toFixed(2)} ETB (${count} ሰው)`;
+            }
+        }
+
+        async function executeBonusCashback() {
+            const percentage = parseFloat(document.getElementById('cashbackPercentageInput').value);
+            if (!percentage || percentage <= 0 || percentage > 100) {
+                return alert("እባክዎ ከ 1 እስከ 100 ያለ ትክክለኛ ፐርሰንት ያስገቡ!");
+            }
+
+            const selectedUsers = cashbackCandidates.filter(c => selectedCandidateIds.has(c.id));
+            if (selectedUsers.length === 0) {
+                return alert("እባክዎ ቢያንስ አንድ ተጠቃሚ ይምረጡ!");
+            }
+
+            const totalBirr = selectedUsers.reduce((sum, u) => sum + (u.amount * percentage / 100), 0);
+            if (!confirm(`እርግጠኛ ነዎት ለ ${selectedUsers.length} ተጠቃሚዎች የ ${percentage}% ካሽባክ (በድምሩ ${totalBirr.toFixed(2)} ETB) መላክ ይፈልጋሉ?`)) {
+                return;
+            }
+
+            const btn = document.getElementById('btnSendCashback');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> እየተላከ ነው...';
+
+            try {
+                const payload = {
+                    percentage,
+                    userIds: selectedUsers.map(u => u.telegram_id),
+                    candidates: selectedUsers.map(u => ({
+                        telegram_id: u.telegram_id,
+                        amount: u.amount,
+                        cashback_amount: parseFloat(((u.amount * percentage) / 100).toFixed(2))
+                    }))
+                };
+
+                const res = await fetch(`${BACKEND_URL}/api/admin/execute-cashback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                alert(data.message || data.error || "ካሽባክ በተሳካ ሁኔታ ተልኳል!");
+                if (res.ok && !data.error) {
+                    loadCashbackCandidates();
+                    loadAllData();
+                }
+            } catch (e) {
+                alert("ካሽባክ መላክ አልተቻለም! እባክዎ ኔትወርክዎን ያረጋግጡ።");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🚀 ካሽባክ ላክ';
+            }
+        }
+
+        async function submitManualBalanceAdjustment() {
+            const telegramId = document.getElementById('adjustTargetId').value.trim();
+            const walletType = document.getElementById('adjustWalletType').value;
+            const amount = parseFloat(document.getElementById('adjustAmount').value);
+
+            if (!telegramId) return alert("እባክዎ የተጠቃሚውን Telegram ID ያስገቡ!");
+            if (!amount || isNaN(amount) || amount === 0) return alert("እባክዎ ትክክለኛ የብር መጠን ያስገቡ!");
+
+            const walletLabel = walletType === 'bonus' ? 'Bonus Wallet (የጨዋታ)' : 'Real Wallet (ሊወጣ የሚችል)';
+            if (!confirm(`ለ Telegram ID: ${telegramId}\\nዋሌት: ${walletLabel}\\nመጠን: ${amount} ETB\\n\\nእርግጠኛ ነዎት ሒሳቡ ይጨመር?`)) {
+                return;
+            }
+
+            const btn = document.getElementById('btnAdjustBal');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> እየተሞላ ነው...';
+
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/admin/adjust-balance`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+                    body: JSON.stringify({
+                        telegramId,
+                        telegram_id: telegramId,
+                        walletType,
+                        wallet_type: walletType,
+                        amount
+                    })
+                });
+                const data = await res.json();
+                alert(data.message || data.error || "ሒሳቡ በተሳካ ሁኔታ ተጨምሯል!");
+                if (res.ok && !data.error) {
+                    document.getElementById('adjustAmount').value = '';
+                    document.getElementById('selectedUserIndicator').classList.add('hidden');
+                    loadAllData();
+                }
+            } catch (e) {
+                alert("ሒሳቡን መጨመር አልተቻለም!");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '➕ ሒሳቡን ጨምር (Credit Balance)';
             }
         }
     </script>
