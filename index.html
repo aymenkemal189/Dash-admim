@@ -562,42 +562,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- 💵 REAL BALANCE CASHBACK (ለእውነተኛ ዴፖዚተሮች ብቻ) -->
-            <div class="glass-box p-4 rounded-3xl border-2 border-emerald-500/50 space-y-3.5 shadow-2xl mt-4">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-                    <div>
-                        <h3 class="text-xs font-black text-white flex items-center gap-1.5">
-                            <i class="fa-solid fa-money-bill-wave text-emerald-400"></i> ለእውነተኛ ዴፖዚተሮች Real Cash መመለሻ
-                        </h3>
-                        <p class="text-[9px] text-slate-400 mt-0.5">ብር አስገብተው በቦነስ ምክንያት Reject ለተደረጉ ሰዎች ወደ Real Wallet መመለሻ</p>
-                    </div>
-                    <button onclick="loadRealCashbackCandidates()" class="text-xs text-emerald-400 hover:text-white">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                    </button>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                        <label class="text-[10px] text-slate-400 font-bold">የተመላሽ ፐርሰንት (%)፦</label>
-                        <input id="realCashbackPctInput" oninput="renderRealCandidates()" type="number" value="100" min="1" max="100" class="w-full text-xs font-black p-2 rounded-xl bg-slate-950 border border-slate-800 text-emerald-400 outline-none focus:border-emerald-400 mt-1">
-                    </div>
-                    <div class="flex items-end">
-                        <button onclick="executeRealCashback()" id="btnSendRealCashback" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2 rounded-xl text-xs shadow-md active:scale-95 transition">
-                            💵 Real Cash መልስ
-                        </button>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center text-xs pt-1 px-1">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="selectAllRealCheckbox" onchange="toggleSelectAllRealCandidates()" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-emerald-600 focus:ring-0">
-                        <span class="text-[11px] font-bold text-white">ሁሉንም እውነተኛ ዴፖዚተሮች ምረጥ</span>
-                    </label>
-                    <span class="text-[10px] text-slate-400">እጩዎች፡ <b id="realCandidateCountBadge" class="text-emerald-400">0</b></span>
-                </div>
-                <div id="realCandidatesContainer" class="space-y-1.5 max-h-56 overflow-y-auto pr-1">
-                    <div class="p-3 text-center text-slate-500 text-xs">እጩዎችን ለመጫን ዳታ አድስን ይጫኑ...</div>
-                </div>
-            </div>
         </section>
     </div>
 
@@ -688,7 +652,6 @@
                 if (target) target.classList.remove('hidden');
                 if (menuId === 'cashback') {
                     loadCashbackCandidates();
-                    loadRealCashbackCandidates();
                 }
             }
 
@@ -1042,122 +1005,6 @@
         }
 
         // =========================================================================
-        // 💵 REAL CASH CASHBACK (ለእውነተኛ ዴፖዚተሮች)
-        // =========================================================================
-        let realCandidates = [];
-        let selectedRealCandidateIds = new Set();
-
-        async function loadRealCashbackCandidates() {
-            const container = document.getElementById('realCandidatesContainer');
-            container.innerHTML = '<div class="p-3 text-center text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin mr-1 text-emerald-400"></i> እጩዎችን በመፈለግ ላይ...</div>';
-
-            try {
-                const res = await fetch(`${BACKEND_URL}/api/admin/cashback/real-candidates`, {
-                    headers: { 'x-admin-key': adminKey }
-                });
-                realCandidates = await res.json();
-
-                document.getElementById('realCandidateCountBadge').innerText = Array.isArray(realCandidates) ? realCandidates.length : 0;
-
-                if (!Array.isArray(realCandidates) || realCandidates.length === 0) {
-                    container.innerHTML = '<div class="p-3 text-center text-slate-500 text-xs">ምንም አይነት እውነተኛ ዴፖዚት ኖሮት Reject የተደረገበት ሰው የለም።</div>';
-                    return;
-                }
-
-                selectedRealCandidateIds = new Set(realCandidates.map(c => String(c.user_id)));
-                const selectAllBox = document.getElementById('selectAllRealCheckbox');
-                if (selectAllBox) selectAllBox.checked = true;
-
-                renderRealCandidates();
-            } catch (e) {
-                container.innerHTML = '<div class="p-3 text-center text-red-400 text-xs">መረጃውን ማምጣት አልተቻለም።</div>';
-            }
-        }
-
-        function renderRealCandidates() {
-            const container = document.getElementById('realCandidatesContainer');
-            if (!Array.isArray(realCandidates) || realCandidates.length === 0) return;
-            const pct = parseFloat(document.getElementById('realCashbackPctInput').value) || 100;
-
-            container.innerHTML = realCandidates.map(u => {
-                const isChecked = selectedRealCandidateIds.has(String(u.user_id));
-                const refundAmt = ((parseFloat(u.total_deposited) * pct) / 100).toFixed(2);
-                return `
-                    <div class="p-2.5 bg-slate-950 rounded-xl border ${isChecked ? 'border-emerald-500/50' : 'border-slate-800'} flex justify-between items-center text-xs">
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSingleRealCandidate('${u.user_id}', this.checked)" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-emerald-600">
-                            <div>
-                                <span class="font-black text-white text-[11px]">${u.first_name || 'ተጫዋች'}</span>
-                                <p class="text-[9px] text-slate-400 font-mono">ID: ${u.telegram_id}</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-emerald-400 font-black text-xs">+${refundAmt} ETB</span>
-                            <p class="text-[8px] text-slate-400">ዴፖዚት ያደረጉት፡ ${parseFloat(u.total_deposited).toFixed(2)} ETB</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function toggleSelectAllRealCandidates() {
-            const isChecked = document.getElementById('selectAllRealCheckbox').checked;
-            if (isChecked) {
-                realCandidates.forEach(c => selectedRealCandidateIds.add(String(c.user_id)));
-            } else {
-                selectedRealCandidateIds.clear();
-            }
-            renderRealCandidates();
-        }
-
-        function toggleSingleRealCandidate(id, checked) {
-            if (checked) selectedRealCandidateIds.add(String(id));
-            else selectedRealCandidateIds.delete(String(id));
-
-            const selectAllBox = document.getElementById('selectAllRealCheckbox');
-            if (selectAllBox) selectAllBox.checked = selectedRealCandidateIds.size === realCandidates.length;
-            renderRealCandidates();
-        }
-
-        async function executeRealCashback() {
-            const pct = parseFloat(document.getElementById('realCashbackPctInput').value) || 100;
-            const isSelectAll = document.getElementById('selectAllRealCheckbox').checked;
-            const selectedIds = Array.from(selectedRealCandidateIds).map(Number);
-
-            if (!isSelectAll && selectedIds.length === 0) {
-                return alert("እባክዎ ቢያንስ አንድ ተጠቃሚ ይምረጡ!");
-            }
-
-            const countToSend = isSelectAll ? realCandidates.length : selectedIds.length;
-            if (!confirm(`እርግጠኛ ነዎት ለ ${countToSend} እውነተኛ ተጫዋቾች የ ${pct}% ተመላሽ ገንዘብ ወደ REAL WALLET (ሊያወጡት ወደሚችሉት ሒሳብ) እንዲላክ ይፈልጋሉ?`)) return;
-
-            const btn = document.getElementById('btnSendRealCashback');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> እየተላከ ነው...';
-
-            try {
-                const res = await fetch(`${BACKEND_URL}/api/admin/cashback/process-real`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
-                    body: JSON.stringify({
-                        selectAll: isSelectAll,
-                        userIds: selectedIds,
-                        percentage: pct
-                    })
-                });
-                const data = await res.json();
-                alert(data.message || data.error);
-                loadRealCashbackCandidates();
-                loadAllData();
-            } catch (e) {
-                alert("ተመላሽ መላክ አልተቻለም!");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '💵 Real Cash መልስ';
-            }
-        }
-
-        // =========================================================================
         // 🎁 BONUS CASHBACK & MANUAL TOP-UP HUB FUNCTIONS + SHORTCUTS
         // =========================================================================
 
@@ -1299,12 +1146,12 @@
                             <div class="truncate">
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-xs font-black text-white truncate">${c.first_name}</span>
-                                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-red-500/15 text-red-300 font-bold">${c.count}x Reject</span>
+                                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-red-500/15 text-red-300 font-bold">${cashbackMode === 'real' ? 'Real Deposit' : c.count + 'x Reject'}</span>
                                 </div>
                                 <div class="text-[9px] text-slate-400 font-mono flex items-center gap-2">
                                     <span>ID: ${c.telegram_id}</span>
                                     <span>•</span>
-                                    <span>Reject: <b class="text-slate-200">${c.amount.toFixed(2)} ETB</b></span>
+                                    <span>${cashbackMode === 'real' ? 'Deposit' : 'Reject'}: <b class="text-slate-200">${c.amount.toFixed(2)} ETB</b></span>
                                 </div>
                             </div>
                         </label>
@@ -1595,8 +1442,33 @@
         }
 
     
-        // ===== FIX 2: ከ200 በላይ + አዲስ Reject የተደረጉ + ካሽባክ በተን =====
+        // ===== FIX 2 (v2): አዲሱ ሰርቨር — Bonus እና Real Cashback ሁነታዎች =====
         let pendingCashbackFocus = null;
+        let cashbackMode = 'bonus'; // 'bonus' = በ Reject መጠን | 'real' = በ Real ዴፖዚት መጠን
+
+        function setCashbackMode(mode) {
+            cashbackMode = mode;
+            const inp = document.getElementById('cashbackPercentageInput');
+            if (inp) inp.value = mode === 'real' ? 100 : 50;
+            ['bonus', 'real'].forEach(m => {
+                const b = document.getElementById('modeBtn_' + m);
+                if (b) b.className = 'flex-1 text-[10px] font-black py-2 rounded-xl border transition ' +
+                    (m === mode ? 'bg-yellow-500/20 border-yellow-500/50 text-yellow-300' : 'bg-slate-950 border-slate-800 text-slate-400');
+            });
+            loadCashbackCandidates();
+        }
+
+        function injectModeToggle() {
+            const s = document.getElementById('candidateSearchInput');
+            if (!s || document.getElementById('modeBtn_bonus')) return;
+            const holder = s.parentElement;
+            holder.insertAdjacentHTML('beforebegin', `
+                <div class="flex gap-2 mb-2">
+                    <button type="button" id="modeBtn_bonus" onclick="setCashbackMode('bonus')">🎁 Bonus (በ Reject መጠን)</button>
+                    <button type="button" id="modeBtn_real" onclick="setCashbackMode('real')">💵 Real (በ ዴፖዚት መጠን)</button>
+                </div>`);
+            setCashbackMode('bonus');
+        }
 
         async function loadCashbackCandidates() {
             const container = document.getElementById('cashbackCandidatesContainer');
@@ -1604,26 +1476,82 @@
             if (icon) icon.classList.add('fa-spin');
             container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">ተጠቃሚዎችን በመጫን ላይ...</div>`;
             try {
-                const map = {};
-                const add = (c) => {
-                    const tg = String(c.telegram_id || '');
-                    const key = tg || String(c.user_id || c.id);
-                    if (!key) return;
-                    const amt = parseFloat(c.total_rejected || c.rejected_amount || c.amount || 0);
-                    if (map[key]) return; // ከሰርቨር እጩዎች ቅድሚያ
-                    map[key] = {
-                        id: key, user_id: c.user_id || null, telegram_id: tg || c.user_id || '',
-                        first_name: c.first_name || c.name || c.username || 'ተጫዋች',
-                        amount: amt, count: c.rejected_count || c.count || 1
-                    };
-                };
-                // 1) ከሰርቨር እጩዎች (ገደብ እንዳይኖር limit params ጨምሮ)
-                let r = await apiCall('/api/admin/cashback/candidates?limit=100000&all=true&timeframe=all');
-                if (r.res.ok && Array.isArray(r.data)) r.data.forEach(add);
-                // 2) ሁሉንም Reject የተደረጉ ትራንዛክሽኖች ሰብስብ (አዲሶቹንም ለመያዝ)
-                try {
-                    const t = await apiCall(`/api/admin/transactions?category=REJECTED&timeframe=all&limit=100000&admin_key=${adminKey}`);
-                    const txs = Array.isArray(t.data) ? t.data : (t.data && (t.data.transactions || t.data.rows)) || [];
-                    const g = {};
-                    txs.forEach(x => {
-              
+                const real = cashbackMode === 'real';
+                const r = await apiCall(real ? '/api/admin/cashback/real-candidates' : '/api/admin/cashback/candidates');
+                if (!r.res.ok || !Array.isArray(r.data)) {
+                    throw new Error(`HTTP ${r.res.status} ${(r.data && r.data.error) || r.text.slice(0, 100)}`);
+                }
+                cashbackCandidates = r.data.map(c => ({
+                    id: String(c.user_id),
+                    user_id: c.user_id,
+                    telegram_id: c.telegram_id,
+                    first_name: c.first_name || c.username || 'ተጫዋች',
+                    amount: parseFloat(real ? c.total_deposited : c.total_rejected) || 0,
+                    count: real ? 0 : (c.rejected_count || 1)
+                }));
+                selectedCandidateIds = new Set(cashbackCandidates.map(c => c.id));
+                const sa = document.getElementById('selectAllCheckbox');
+                if (sa) sa.checked = cashbackCandidates.length > 0;
+
+                const s = document.getElementById('candidateSearchInput');
+                if (pendingCashbackFocus) {
+                    const f = pendingCashbackFocus; pendingCashbackFocus = null;
+                    const c = cashbackCandidates.find(x => String(x.telegram_id) === String(f.tgId));
+                    if (c) {
+                        selectedCandidateIds = new Set([c.id]);
+                        if (sa) sa.checked = false;
+                        if (s) s.value = String(f.tgId);
+                    } else {
+                        alert('ይህ ተጠቃሚ በዚህ ሁነታ ዝርዝር ውስጥ የለም።');
+                    }
+                } else if (s) { s.value = ''; }
+                renderCashbackCandidates();
+            } catch (e) {
+                container.innerHTML = `<div class="p-3 text-center text-red-400 text-xs">ዳታውን መጫን አልተቻለም: ${e.message}</div>`;
+            } finally {
+                if (icon) icon.classList.remove('fa-spin');
+            }
+        }
+
+        function jumpToCashback(tgId, name, amount) {
+            pendingCashbackFocus = { tgId, name, amount: parseFloat(amount) || 0 };
+            navigateMenu('cashback', true);
+        }
+
+        async function executeBonusCashback() {
+            const real = cashbackMode === 'real';
+            const percentage = parseFloat(document.getElementById('cashbackPercentageInput').value);
+            if (!percentage || percentage <= 0 || percentage > 100) return alert("ከ 1 እስከ 100 ፐርሰንት ያስገቡ!");
+            const selected = cashbackCandidates.filter(c => selectedCandidateIds.has(c.id));
+            if (selected.length === 0) return alert("ቢያንስ አንድ ተጠቃሚ ይምረጡ!");
+            const total = selected.reduce((s, u) => s + (u.amount * percentage / 100), 0);
+            const where = real ? 'ወደ REAL Wallet (ሊያወጡት የሚችሉት)' : 'ወደ Bonus Wallet';
+            if (!confirm(`ለ ${selected.length} ተጠቃሚዎች የ ${percentage}% ካሽባክ (ድምር ${total.toFixed(2)} ETB) ${where} ይላክ?`)) return;
+
+            const btn = document.getElementById('btnSendCashback');
+            btn.disabled = true;
+            btn.innerHTML = 'እየተላከ ነው...';
+            try {
+                const r = await apiCall(real ? '/api/admin/cashback/process-real' : '/api/admin/cashback/process', {
+                    method: 'POST',
+                    body: JSON.stringify({ selectAll: false, userIds: selected.map(u => u.user_id), percentage })
+                });
+                if (!r.data) {
+                    alert(`ሰርቨሩ ትክክለኛ ምላሽ አልሰጠም (HTTP ${r.res.status}):\n` + r.text.slice(0, 150));
+                } else {
+                    alert(r.data.message || r.data.error || (r.res.ok ? "ተልኳል!" : `ስህተት HTTP ${r.res.status}`));
+                    if (r.res.ok && !r.data.error) { loadCashbackCandidates(); loadAllData(); }
+                }
+            } catch (e) {
+                alert("ከሰርቨሩ ጋር መገናኘት አልተቻለም (Render ተኝቶ ሊሆን ይችላል፤ ጥቂት ጠብቀህ ድጋሚ ሞክር):\n" + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🚀 ካሽባክ ላክ';
+            }
+        }
+
+        injectModeToggle();
+
+    </script>
+</body>
+</html>
